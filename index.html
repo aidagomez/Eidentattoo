@@ -1,6 +1,627 @@
 <!DOCTYPE html>
 <html lang="es">
+<head><!DOCTYPE html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eidentattoo | Gestión Aída</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js" type="module"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #000;
+            color: #fff;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
+        }
+        .accent-red { color: #ef4444; }
+        .bg-accent-red { background-color: #ef4444; }
+        .input-dark {
+            background: #0d0d0d;
+            border: 1px solid #262626;
+            color: white;
+            border-radius: 18px;
+            padding: 16px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .input-dark:focus { border-color: #ef4444; outline: none; box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1); }
+        .view-section { display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.4s ease-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #signature-canvas {
+            background: #fff;
+            border-radius: 24px;
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+        .btn-luxury {
+            background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-luxury:active { transform: scale(0.95); }
+
+        .nav-active { color: #ef4444; background: rgba(239, 68, 68, 0.12); }
+        
+        .style-pill {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.05em;
+        }
+        .style-pill.active {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-24 md:pb-0 md:pl-28">
+
+    <!-- NAVIGATION BAR -->
+    <nav id="main-nav" class="fixed bottom-0 left-0 w-full md:w-28 md:h-full bg-[#050505] border-t md:border-t-0 md:border-r border-white/5 z-50 flex md:flex-col items-center justify-around md:justify-center gap-8 p-4">
+        <div class="hidden md:block absolute top-10 text-[#ef4444] font-black text-2xl italic tracking-tighter text-center">AI<span class="text-white">DA</span></div>
+        
+        <button onclick="window.irA('dashboard')" class="nav-btn p-4 rounded-3xl transition-all hover:text-white text-white/40" id="nav-dashboard">
+            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+        <button onclick="window.irA('agenda')" class="nav-btn p-4 rounded-3xl transition-all hover:text-white text-white/40" id="nav-agenda">
+            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </button>
+        <button onclick="window.irA('calculadora')" class="nav-btn p-4 rounded-3xl transition-all hover:text-white text-white/40" id="nav-calculadora">
+            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14h6"/><path d="M12 11v6"/></svg>
+        </button>
+        <button onclick="window.irA('stock')" class="nav-btn p-4 rounded-3xl transition-all hover:text-white text-white/40" id="nav-stock">
+            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </button>
+        <button onclick="window.irA('firma')" class="nav-btn p-4 rounded-3xl transition-all hover:text-white text-white/40" id="nav-firma">
+            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </button>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-6 md:p-12 lg:p-20">
+        
+        <!-- DASHBOARD -->
+        <section id="view-dashboard" class="view-section active">
+            <header class="mb-12">
+                <h1 class="text-5xl font-extrabold mb-3 tracking-tighter italic uppercase">eidentattoo <span class="accent-red">by Aída.</span></h1>
+                <p class="text-white/30 text-lg">Mínimo de sesión actual: <span class="text-white font-bold">40.00€</span></p>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div class="glass-card p-8 rounded-[2.5rem]">
+                    <p class="text-white/40 mb-2 text-xs uppercase tracking-[0.2em] font-bold">Total Agenda</p>
+                    <h3 id="stat-sessions" class="text-4xl font-black italic">0</h3>
+                </div>
+                <div class="glass-card p-8 rounded-[2.5rem]">
+                    <p class="text-white/40 mb-2 text-xs uppercase tracking-[0.2em] font-bold">Documentos</p>
+                    <h3 id="stat-consents" class="text-4xl font-black italic">0</h3>
+                </div>
+                <div onclick="window.generarQR()" class="glass-card p-8 rounded-[2.5rem] border-red-500/30 flex items-center justify-between cursor-pointer active:scale-95 transition-all">
+                    <div>
+                        <p class="text-red-500 mb-2 text-xs uppercase tracking-[0.2em] font-bold">Firma Digital</p>
+                        <h3 class="text-2xl font-black italic">QR LINK</h3>
+                    </div>
+                    <div class="bg-red-500 p-3 rounded-2xl text-white shadow-lg shadow-red-500/30">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card p-8 rounded-[2.5rem]">
+                <h4 class="text-xl font-bold mb-6 flex items-center gap-2 italic">
+                    <span class="w-2 h-2 rounded-full bg-accent-red animate-pulse"></span> Hoy en el estudio
+                </h4>
+                <div id="dash-today-list" class="space-y-4">
+                    <p class="text-white/20 italic">No tienes sesiones para hoy, Aída.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- AGENDA -->
+        <section id="view-agenda" class="view-section">
+            <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                    <h1 class="text-5xl font-extrabold mb-3 tracking-tighter italic">Agenda <span class="accent-red">.</span></h1>
+                    <p class="text-white/30 text-lg italic">Confirmación rápida por WhatsApp</p>
+                </div>
+                <button onclick="window.abrirModalCita()" class="btn-luxury px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest italic shadow-xl">Agendar Sesión</button>
+            </header>
+            <div id="calendar-grid" class="grid grid-cols-7 gap-3 glass-card p-8 rounded-[3rem]"></div>
+            <div id="day-details" class="mt-10 space-y-4"></div>
+        </section>
+
+        <!-- CALCULADORA DE ESTILOS (ACTUALIZADA A 40€ MÍN) -->
+        <section id="view-calculadora" class="view-section">
+            <header class="mb-12">
+                <h1 class="text-5xl font-extrabold mb-3 tracking-tighter italic text-center md:text-left uppercase">Calculadora Pro <span class="accent-red">.</span></h1>
+                <p class="text-white/30 text-lg text-center md:text-left">Mínimo de sesión de Aída: <span class="text-white font-bold">40€</span></p>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div class="glass-card p-10 rounded-[3.5rem] space-y-8">
+                    <div>
+                        <label class="block text-white/40 mb-4 text-[10px] font-bold uppercase tracking-widest">Técnicas a mezclar</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="style-selector">
+                            <button onclick="window.toggleStyle('lineal', 1.0, 'Lineal')" class="style-pill p-4 rounded-2xl text-left bg-white/5" id="pill-lineal">Lineal / Minimal</button>
+                            <button onclick="window.toggleStyle('anime_bg', 1.5, 'Anime B&G')" class="style-pill p-4 rounded-2xl text-left bg-white/5" id="pill-anime_bg">Anime Black & Grey</button>
+                            <button onclick="window.toggleStyle('anime_color', 1.9, 'Anime Color')" class="style-pill p-4 rounded-2xl text-left bg-white/5" id="pill-anime_color">Anime Color</button>
+                            <button onclick="window.toggleStyle('japones', 2.1, 'Japonés Trad.')" class="style-pill p-4 rounded-2xl text-left bg-white/5" id="pill-japones">Japonés Tradicional</button>
+                            <button onclick="window.toggleStyle('realismo', 2.4, 'Realismo Ilust.')" class="style-pill p-4 rounded-2xl text-left bg-white/5" id="pill-realismo">Realismo Ilustrado</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6 pt-4 border-t border-white/5">
+                        <div>
+                            <label class="block text-white/40 mb-3 text-[10px] font-bold uppercase tracking-widest">Dimensiones (cm)</label>
+                            <input type="number" id="calc-cm" value="5" min="1" class="input-dark text-2xl font-black italic" oninput="window.calcularPrecio()">
+                        </div>
+                        <div>
+                            <label class="block text-white/40 mb-3 text-[10px] font-bold uppercase tracking-widest">Dificultad (+%)</label>
+                            <input type="number" id="calc-extra" value="0" min="0" class="input-dark text-2xl font-black italic" oninput="window.calcularPrecio()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col justify-between glass-card p-10 rounded-[3.5rem] bg-gradient-to-b from-[#111] to-[#000]">
+                    <div class="text-center pt-8">
+                        <p class="text-white/40 text-[10px] uppercase tracking-[0.4em] mb-4 font-black">Presupuesto Aída</p>
+                        <div class="relative inline-block">
+                            <h2 id="calc-total" class="text-8xl font-black tracking-tighter italic">40€</h2>
+                            <div id="mixed-badge" class="hidden absolute -top-4 -right-12 bg-white text-black text-[9px] px-3 py-1 rounded-full font-black uppercase italic shadow-xl">MIX_STYLE</div>
+                        </div>
+                        <p id="calc-summary" class="text-red-500 mt-6 font-bold text-xs uppercase tracking-widest h-6">ELIGE TU ESTILO</p>
+                    </div>
+
+                    <div class="mt-12 space-y-4">
+                        <div class="flex justify-between text-[10px] text-white/20 border-b border-white/5 pb-2 uppercase tracking-widest font-black">
+                            <span>Base de sesión (Aída)</span>
+                            <span>40.00€</span>
+                        </div>
+                        <button class="w-full btn-luxury py-6 rounded-2xl text-xl font-black active:scale-95 transition-all shadow-xl shadow-red-600/30 uppercase italic tracking-tighter">Confirmar Presupuesto</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STOCK -->
+        <section id="view-stock" class="view-section">
+            <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                    <h1 class="text-5xl font-extrabold mb-3 tracking-tighter italic uppercase">Stock <span class="accent-red">.</span></h1>
+                    <p class="text-white/30 text-lg italic text-balance">Gestión de agujas y tintas para eidentattoo</p>
+                </div>
+                <button onclick="window.abrirModalStock()" class="btn-luxury px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest italic shadow-lg">+ Material</button>
+            </header>
+            <div class="glass-card rounded-[3rem] overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-white/5 text-[10px] uppercase tracking-widest font-black text-white/40">
+                        <tr>
+                            <th class="p-6">Material</th>
+                            <th class="p-6">Disponible</th>
+                            <th class="p-6">Lote / Venc.</th>
+                            <th class="p-6"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="stock-list" class="divide-y divide-white/5"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- FIRMA -->
+        <section id="view-firma" class="view-section">
+            <div class="max-w-4xl mx-auto space-y-8">
+                <header class="text-center">
+                    <h1 class="text-4xl font-extrabold mb-2 italic tracking-tighter uppercase">Consentimiento Sanitario</h1>
+                    <p class="accent-red font-black tracking-[0.5em] uppercase text-xs italic">eidentattoo | ARTISTA: AÍDA</p>
+                </header>
+
+                <div class="glass-card p-10 rounded-[3.5rem] space-y-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" id="sign-name" placeholder="Nombre Completo" class="input-dark">
+                        <input type="text" id="sign-dni" placeholder="DNI / NIE" class="input-dark">
+                    </div>
+
+                    <div class="bg-[#050505] p-6 rounded-3xl border border-white/5 text-[10px] leading-relaxed text-white/30 h-40 overflow-y-auto italic">
+                        <p class="font-bold text-white mb-2 underline uppercase">CONDICIONES LEGALES:</p>
+                        1. El cliente autoriza a **Aída (eidentattoo)** a realizar el procedimiento solicitado.<br>
+                        2. Se garantiza el uso de material estéril de un solo uso.<br>
+                        3. Se ha informado de la base mínima de 40€ por sesión.<br>
+                        4. Tratamiento de datos: Se custodian exclusivamente para fines legales según el RGPD.
+                    </div>
+
+                    <div>
+                        <p class="text-center text-[10px] text-white/20 mb-4 uppercase font-black tracking-[0.3em]">Firma digital del cliente</p>
+                        <canvas id="signature-canvas" class="w-full h-64 border-2 border-dashed border-white/10 shadow-2xl"></canvas>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <button onclick="window.limpiarFirma()" class="text-white/20 hover:text-white text-xs font-black uppercase transition-colors tracking-widest">Limpiar Lienzo</button>
+                        <span id="sign-status" class="text-[9px] text-white/10 font-mono italic">AWAIT_CLIENT_AUTH</span>
+                    </div>
+
+                    <button id="btn-save-signature" onclick="window.guardarConsentimiento()" class="w-full btn-luxury py-6 rounded-2xl text-2xl font-black shadow-2xl shadow-red-600/40 uppercase italic">Confirmar Firma</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODALS -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black/98 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-xl">
+        <div class="glass-card w-full max-w-lg p-10 rounded-[3.5rem] relative border border-white/10 shadow-[0_0_100px_rgba(239,68,68,0.1)]">
+            <button onclick="window.cerrarModal()" class="absolute top-8 right-8 text-white/20 hover:text-white text-3xl font-light">&times;</button>
+            <div id="modal-content"></div>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 px-8 py-4 bg-white text-black font-black rounded-2xl shadow-2xl transition-all translate-y-20 opacity-0 z-[200] italic uppercase tracking-tighter"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'eiden-tattoo-v2';
+
+        let user = null;
+        let selectedStyles = [];
+        let appointments = [];
+        let stock = [];
+
+        // NAVIGATION
+        window.irA = (viewId) => {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            document.getElementById(`view-${viewId}`).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('nav-active'));
+            const activeBtn = document.getElementById(`nav-${viewId}`);
+            if (activeBtn) activeBtn.classList.add('nav-active');
+
+            if (viewId === 'agenda') window.renderCalendar();
+            if (viewId === 'firma') setTimeout(window.initCanvas, 100);
+        };
+
+        // CALCULATOR LOGIC (40€ MIN)
+        window.toggleStyle = (id, mult, label) => {
+            const index = selectedStyles.findIndex(s => s.id === id);
+            const pill = document.getElementById(`pill-${id}`);
+            
+            if (index > -1) {
+                selectedStyles.splice(index, 1);
+                pill.classList.remove('active');
+            } else {
+                selectedStyles.push({ id, mult, label });
+                pill.classList.add('active');
+            }
+            window.calcularPrecio();
+        };
+
+        window.calcularPrecio = () => {
+            const base = 40; // Mínimo actualizado a 40€
+            
+            if (selectedStyles.length === 0) {
+                document.getElementById('calc-total').textContent = `${base}€`;
+                document.getElementById('calc-summary').textContent = "ELIGE TU ESTILO";
+                document.getElementById('mixed-badge').classList.add('hidden');
+                return;
+            }
+
+            const cm = parseInt(document.getElementById('calc-cm').value) || 1;
+            const extra = parseInt(document.getElementById('calc-extra').value) || 0;
+
+            const maxMult = Math.max(...selectedStyles.map(s => s.mult));
+            const mixBonus = (selectedStyles.length - 1) * 0.15;
+            const finalMult = maxMult + mixBonus;
+
+            const pricePerCm = 7.5 * finalMult;
+            let total = base + (cm * pricePerCm);
+            
+            if (extra > 0) total += (total * (extra / 100));
+
+            document.getElementById('calc-total').textContent = `${Math.round(total)}€`;
+            document.getElementById('calc-summary').textContent = selectedStyles.map(s => s.label).join(' + ');
+            
+            if (selectedStyles.length > 1) {
+                document.getElementById('mixed-badge').classList.remove('hidden');
+            } else {
+                document.getElementById('mixed-badge').classList.add('hidden');
+            }
+        };
+
+        // WHATSAPP (AÍDA)
+        window.confirmarWhatsapp = (phone, client, date, time) => {
+            const msg = `Hola ${client}, soy Aída de eidentattoo. Te escribo para confirmar que nos vemos el día ${date} a las ${time} en el estudio. ¿Todo correcto por tu parte? ¡Mil gracias!`;
+            const url = `https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        };
+
+        // CALENDAR
+        window.renderCalendar = () => {
+            const grid = document.getElementById('calendar-grid');
+            const now = new Date();
+            const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+            
+            grid.innerHTML = ['L', 'M', 'X', 'J', 'V', 'S', 'D'].map(d => `<div class="text-center text-[10px] font-black text-white/10 mb-2 uppercase tracking-widest">${d}</div>`).join('');
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                const hasApp = appointments.some(a => a.date === dateStr);
+                grid.innerHTML += `
+                    <button onclick="window.verCitas('${dateStr}')" class="aspect-square flex items-center justify-center rounded-2xl border border-white/5 hover:border-red-500 transition-all ${hasApp ? 'bg-red-500/10 text-red-500 border-red-500/40 font-black italic shadow-inner' : ''}">
+                        ${i}
+                    </button>
+                `;
+            }
+        };
+
+        window.verCitas = (date) => {
+            const list = appointments.filter(a => a.date === date);
+            const container = document.getElementById('day-details');
+            container.innerHTML = `
+                <h4 class="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] mb-4 italic">${date}</h4>
+                ${list.length ? list.map(a => `
+                    <div class="glass-card p-6 rounded-[2rem] flex justify-between items-center animate-fadeIn border-l-4 border-red-500">
+                        <div>
+                            <p class="font-black text-lg italic uppercase tracking-tighter text-white">${a.client}</p>
+                            <p class="text-[10px] text-white/40 font-bold uppercase tracking-widest">${a.time} • ${a.style}</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <button onclick="window.confirmarWhatsapp('${a.phone}', '${a.client}', '${a.date}', '${a.time}')" class="bg-green-500/20 text-green-500 p-3 rounded-2xl hover:bg-green-500 hover:text-white transition-all shadow-lg active:scale-90">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.587-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.522-2.961-2.638-.087-.117-.708-.941-.708-1.793s.437-1.27.597-1.43c.16-.16.351-.2.468-.2.117 0 .234.001.334.005.109.004.254-.042.398.302.144.344.49.1.597.43.597 1.45.065.13.044.273-.053.402-.014.019-.014.019-.014.019-.09.11-.165.18-.243.268-.081.088-.171.19-.081.345.09.155.397.656.851 1.06.584.52 1.077.681 1.232.756.155.075.244.063.335-.042.09-.105.39-.454.494-.608.106-.154.21-.13.354-.077.144.053.916.432 1.071.509s.258.128.297.193c.039.066.039.378-.105.783z"/></svg>
+                            </button>
+                            <button onclick="window.borrarCita('${a.id}')" class="bg-white/5 text-white/10 p-3 rounded-2xl hover:bg-red-500/20 hover:text-red-500 transition-all active:scale-90">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                `).join('') : '<p class="text-white/20 italic text-xs uppercase tracking-widest">Sin sesiones hoy, disfruta Aída.</p>'}
+            `;
+        };
+
+        // SIGNATURE CANVAS
+        let canvas, ctx, drawing = false;
+        window.initCanvas = () => {
+            canvas = document.getElementById('signature-canvas');
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
+
+            const getPos = (e) => {
+                const r = canvas.getBoundingClientRect();
+                const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+                const y = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
+                return { x, y };
+            };
+
+            const start = (e) => { 
+                drawing = true; 
+                const p = getPos(e); 
+                ctx.beginPath(); 
+                ctx.moveTo(p.x, p.y); 
+                document.getElementById('sign-status').textContent = "FIRMA_DETECTADA";
+            };
+            const move = (e) => { if(!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
+            canvas.addEventListener('mousedown', start);
+            canvas.addEventListener('mousemove', move);
+            window.addEventListener('mouseup', () => drawing = false);
+            canvas.addEventListener('touchstart', (e) => { e.preventDefault(); start(e); });
+            canvas.addEventListener('touchmove', (e) => { e.preventDefault(); move(e); });
+        };
+        window.limpiarFirma = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('sign-status').textContent = "AWAIT_CLIENT_AUTH";
+        };
+
+        // FIRESTORE
+        async function initData() {
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'appointments'), (s) => {
+                appointments = s.docs.map(d => ({ id: d.id, ...d.data() }));
+                document.getElementById('stat-sessions').textContent = appointments.length;
+                updateDashboard();
+                if (document.getElementById('view-agenda').classList.contains('active')) window.renderCalendar();
+            });
+
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'consents'), (s) => {
+                document.getElementById('stat-consents').textContent = s.size;
+            });
+
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'inventory'), (s) => {
+                stock = s.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderStock();
+            });
+
+            if (new URLSearchParams(window.location.search).get('mode') === 'client') {
+                document.getElementById('main-nav').classList.add('hidden');
+                document.body.style.padding = "0";
+                window.irA('firma');
+            }
+        }
+
+        function updateDashboard() {
+            const today = new Date().toISOString().split('T')[0];
+            const list = appointments.filter(a => a.date === today);
+            const container = document.getElementById('dash-today-list');
+            
+            container.innerHTML = list.length ? list.map(a => `
+                <div class="flex items-center justify-between p-5 bg-white/5 rounded-[1.5rem] border border-white/5">
+                    <div>
+                        <p class="font-black text-white uppercase italic tracking-tighter">${a.client}</p>
+                        <p class="text-[9px] text-white/30 font-bold uppercase tracking-widest">${a.time} • ${a.style}</p>
+                    </div>
+                    <button onclick="window.confirmarWhatsapp('${a.phone}', '${a.client}', '${a.date}', '${a.time}')" class="text-green-500 text-[9px] font-black uppercase tracking-widest border border-green-500/30 px-3 py-1 rounded-full">WHATSAPP</button>
+                </div>
+            `).join('') : '<p class="text-white/20 italic text-xs">Sin sesiones para hoy, Aída.</p>';
+        }
+
+        function renderStock() {
+            const list = document.getElementById('stock-list');
+            list.innerHTML = stock.map(s => `
+                <tr class="hover:bg-white/5 transition-all group">
+                    <td class="p-6">
+                        <p class="font-black italic uppercase text-sm tracking-tighter">${s.name}</p>
+                    </td>
+                    <td class="p-6">
+                        <span class="px-4 py-1 rounded-full text-[9px] font-black ${s.quantity < 5 ? 'bg-red-500/20 text-red-500' : 'bg-white/10 text-white/40'}">
+                            ${s.quantity} PCS.
+                        </span>
+                    </td>
+                    <td class="p-6 text-white/40 text-[10px] font-bold uppercase tracking-widest">${s.lote || 'NO_LOT'} • ${s.expiry || 'NO_EXP'}</td>
+                    <td class="p-6 text-right">
+                        <button onclick="window.borrarStock('${s.id}')" class="text-white/10 group-hover:text-red-500 text-2xl font-light active:scale-75 transition-all">&times;</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ACTIONS
+        window.guardarConsentimiento = async () => {
+            const name = document.getElementById('sign-name').value;
+            const dni = document.getElementById('sign-dni').value;
+            if (!name || !dni) return window.showToast("Datos obligatorios faltantes");
+
+            document.getElementById('btn-save-signature').textContent = "ENCRIPTANDO...";
+            
+            const data = {
+                client: name,
+                dni: dni,
+                signature: canvas.toDataURL(),
+                technician: "Aída",
+                timestamp: new Date().toISOString()
+            };
+
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'consents'), data);
+            window.showToast("CONSENTIMIENTO_OK");
+            setTimeout(() => location.reload(), 2000);
+        };
+
+        window.abrirModalCita = () => {
+            const content = document.getElementById('modal-content');
+            content.innerHTML = `
+                <h3 class="text-3xl font-black mb-8 italic tracking-tighter uppercase">Agendar Cita</h3>
+                <div class="space-y-4">
+                    <input type="text" id="m-client" placeholder="Cliente" class="input-dark">
+                    <input type="tel" id="m-phone" placeholder="Teléfono" class="input-dark">
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="date" id="m-date" class="input-dark">
+                        <input type="time" id="m-time" class="input-dark">
+                    </div>
+                    <input type="text" id="m-style" placeholder="Estilo / Notas de Sesión" class="input-dark">
+                    <button onclick="window.saveCita()" class="w-full btn-luxury py-5 rounded-2xl font-black mt-4 uppercase italic tracking-widest shadow-xl">Confirmar Cita</button>
+                </div>
+            `;
+            document.getElementById('modal-overlay').classList.remove('hidden');
+        };
+
+        window.saveCita = async () => {
+            const data = {
+                client: document.getElementById('m-client').value,
+                phone: document.getElementById('m-phone').value,
+                date: document.getElementById('m-date').value,
+                time: document.getElementById('m-time').value,
+                style: document.getElementById('m-style').value
+            };
+            if (!data.client || !data.phone) return window.showToast("Faltan campos");
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'appointments'), data);
+            window.cerrarModal();
+            window.showToast("SESIÓN_AGENDADA");
+        };
+
+        window.abrirModalStock = () => {
+            const content = document.getElementById('modal-content');
+            content.innerHTML = `
+                <h3 class="text-3xl font-black mb-8 italic tracking-tighter uppercase">Insumo Nuevo</h3>
+                <div class="space-y-4">
+                    <input type="text" id="s-name" placeholder="Material (Agujas, Tintas...)" class="input-dark">
+                    <input type="number" id="s-qty" placeholder="Cantidad" class="input-dark">
+                    <input type="text" id="s-lote" placeholder="Lote" class="input-dark">
+                    <input type="date" id="s-expiry" class="input-dark">
+                    <button onclick="window.saveStock()" class="w-full btn-luxury py-5 rounded-2xl font-black mt-4 uppercase tracking-widest italic">Actualizar Inventario</button>
+                </div>
+            `;
+            document.getElementById('modal-overlay').classList.remove('hidden');
+        };
+
+        window.saveStock = async () => {
+            const data = {
+                name: document.getElementById('s-name').value,
+                quantity: parseInt(document.getElementById('s-qty').value),
+                lote: document.getElementById('s-lote').value,
+                expiry: document.getElementById('s-expiry').value
+            };
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'inventory'), data);
+            window.cerrarModal();
+        };
+
+        window.borrarCita = (id) => deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'appointments', id));
+        window.borrarStock = (id) => deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'inventory', id));
+        window.cerrarModal = () => document.getElementById('modal-overlay').classList.add('hidden');
+        
+        window.generarQR = () => {
+            const url = window.location.href.split('?')[0] + '?mode=client';
+            const qr = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(url)}&color=000&bgcolor=fff`;
+            const content = document.getElementById('modal-content');
+            content.innerHTML = `
+                <div class="text-center">
+                    <h3 class="text-3xl font-black mb-6 italic tracking-tighter uppercase">Firma Digital</h3>
+                    <div class="bg-white p-6 rounded-[2.5rem] inline-block mb-6 shadow-2xl ring-8 ring-white/5"><img src="${qr}"></div>
+                    <p class="text-white/40 text-[9px] uppercase font-bold tracking-[0.2em] leading-relaxed px-6">Escanee este código con el dispositivo del cliente para proceder a la firma legal.</p>
+                </div>
+            `;
+            document.getElementById('modal-overlay').classList.remove('hidden');
+        };
+
+        window.showToast = (msg) => {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000);
+        };
+
+        // STARTUP
+        onAuthStateChanged(auth, (u) => {
+            if (u) { user = u; initData(); }
+            else signInAnonymously(auth);
+        });
+
+    </script>
+</body>
+</html>
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>eidentattoo | Studio Manager</title>
@@ -507,14 +1128,5 @@
             await addDoc(collection(db, `artifacts/${appId}/users/${artistId}/consents`), { client: name, createdAt: serverTimestamp() });
             alert("¡Documento eidentattoo guardado!");
             if(isClient) {
-                document.body.innerHTML = '<div class="h-screen flex flex-col items-center justify-center bg-black p-10 text-center"><h1 class="text-4xl font-black italic text-red-600 mb-6 tracking-tighter">¡LISTO!</h1><p class="text-zinc-600 text-[10px] font-bold uppercase tracking-widest leading-relaxed">Tu firma ha sido recibida en el Studio eiden. Ya puedes cerrar.</p></div>';
-            } else {
-                get('sig-name-in').value = '';
-                switchView('dashboard');
-            }
-        };
-
-    </script>
-</body>
-</html>
+                document.body.innerHTML = '<div class="h-screen flex flex-col items-center justify-center bg-black p-10 text-center"><h1 class="text-4xl font-black italic text-red-600 mb-6 tracking-tighter">¡LISTO!</h1><p class="text-zinc-600 text-[10px] font-bold uppercase tracking-widest leading-relaxed">Tu firma ha sido recibida en el Studio eiden.
 
