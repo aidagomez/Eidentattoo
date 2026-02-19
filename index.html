@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>eidentattoo | Aída Gómez</title>
     
-    <!-- PWA & Iconos para Escritorio -->
+    <!-- Configuración PWA e Icono para Escritorio -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="eidentattoo">
-    <!-- Icono de Máquina Pen Roja -->
+    <!-- Icono de la Máquina de Tatuar Pen Roja -->
     <link rel="apple-touch-icon" href="https://i.ibb.co/LzNfXN8/tattoo-pen-red.png">
     <link rel="icon" type="image/png" href="https://i.ibb.co/LzNfXN8/tattoo-pen-red.png">
 
@@ -26,41 +26,44 @@
             margin: 0;
             padding-bottom: calc(env(safe-area-inset-bottom) + 100px);
             -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
         }
 
-        /* Diseño Luxury */
+        /* Estética Luxury Premium */
         .luxury-card {
             background: #0a0a0a;
             border: 1px solid #1a1a1a;
             border-radius: 1.5rem;
-            box-shadow: 0 10px 40px -10px rgba(0,0,0,1);
+            box-shadow: 0 15px 50px -12px rgba(0, 0, 0, 0.9);
         }
 
-        .btn-primary { background: var(--accent); color: white; transition: 0.2s; }
-        .btn-primary:active { transform: scale(0.96); }
+        .btn-primary { background: var(--accent); color: white; transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .btn-primary:active { transform: scale(0.95); filter: brightness(0.8); }
 
-        .nav-item { color: #555; transition: 0.3s; }
+        .nav-item { color: #444; transition: 0.3s; }
         .nav-item.active { color: var(--accent); }
 
-        /* Contenedor QR Responsivo */
-        #qrcode-container {
+        /* Contenedor QR Centrado y Limpio */
+        #qrcode-box {
             background: white;
-            padding: 12px;
+            padding: 15px;
             border-radius: 1.5rem;
             display: inline-block;
-            width: 100%;
-            max-width: 220px;
+            width: 220px;
+            height: 220px;
             margin: 0 auto;
         }
-        #qrcode-container svg { width: 100% !important; height: auto !important; }
+        #qrcode-box svg { width: 100% !important; height: auto !important; }
 
-        canvas { background: #fff; width: 100%; height: 240px; border-radius: 1rem; cursor: crosshair; touch-action: none; }
+        canvas { background: #fff; width: 100%; height: 230px; border-radius: 1rem; cursor: crosshair; touch-action: none; }
         
+        /* Reglas de Modo Cliente */
         .client-mode #nav-bar, .client-mode .admin-only { display: none !important; }
         
-        .view { display: none; animation: fadeIn 0.4s ease; }
-        .view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
+        /* Animaciones */
+        .view { display: none; }
+        .view.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .style-btn.selected, .comp-btn.selected {
             background: var(--accent) !important;
@@ -68,38 +71,53 @@
             color: white !important;
         }
 
+        /* Inputs Luxury */
         input, select {
             background: #000 !important;
             border: 1px solid #1a1a1a !important;
             color: white !important;
             outline: none;
         }
+
+        #splash {
+            transition: opacity 0.6s ease, visibility 0.6s;
+            z-index: 9999;
+        }
+        
+        .hide-loader {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
     </style>
 </head>
-<body>
+<body class="bg-black">
 
-    <!-- Pantalla de Carga (Splash) -->
-    <div id="splash" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center transition-opacity duration-700">
-        <div class="w-24 h-24 text-red-500 mb-6 animate-pulse">
-            <!-- SVG de Máquina Pen (Logo nativo) -->
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M16 3l4 4-10 10-4-4L16 3z" fill="currentColor" fill-opacity="0.1"/>
-                <path d="M7 13l-3 3v4h4l3-3M16 3l4 4" stroke-linecap="round"/><path d="M4 20l1-1"/>
+    <!-- Splash Screen (Logo SVG Nativo de la Pen Machine) -->
+    <div id="splash" class="fixed inset-0 bg-black flex flex-col items-center justify-center p-10">
+        <div class="w-28 h-28 text-red-500 mb-8 animate-pulse">
+            <!-- SVG Dinámico: Máquina Pen -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                <path d="M17 3l4 4-11 11-4-4L17 3z" fill="currentColor" fill-opacity="0.1"/>
+                <rect x="5" y="15" width="4" height="6" rx="1" transform="rotate(-45 5 15)" fill="currentColor"/>
+                <path d="M3 21l2-2M15 5l4 4" stroke-linecap="round"/>
+                <circle cx="12" cy="12" r="1" fill="currentColor"/>
             </svg>
         </div>
-        <h1 class="text-3xl font-black tracking-[0.3em] text-red-500 italic uppercase">eidentattoo</h1>
-        <p class="text-[10px] uppercase text-gray-500 tracking-[0.4em] mt-2">Aída Gómez Studio</p>
+        <h1 class="text-3xl font-black tracking-[0.4em] text-red-500 italic uppercase">eidentattoo</h1>
+        <p class="text-[9px] uppercase text-gray-600 tracking-[0.5em] mt-3">Aída Gómez Studio</p>
     </div>
 
+    <!-- Contenido Principal -->
     <main class="max-w-md mx-auto p-5">
         
-        <!-- Header (Panel Aída) -->
-        <header class="admin-only flex justify-between items-center mb-8 pt-4">
+        <!-- Header (Panel Admin) -->
+        <header class="admin-only flex justify-between items-center mb-8 pt-6">
             <div>
-                <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Estudio Profesional</p>
-                <h2 class="text-2xl font-black italic tracking-tighter text-white">eidentattoo</h2>
+                <p class="text-[9px] font-bold text-red-500 uppercase tracking-widest">Estudio Profesional</p>
+                <h2 class="text-2xl font-black italic tracking-tighter text-white uppercase">eidentattoo</h2>
             </div>
-            <button onclick="window.abrirModalCita()" class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 border border-red-500/20 active:scale-90 transition-transform">
+            <button onclick="window.abrirModalCita()" class="w-11 h-11 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 border border-red-500/20 active:scale-90 transition-transform shadow-lg">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2.5" stroke-linecap="round"/></svg>
             </button>
         </header>
@@ -107,44 +125,46 @@
         <!-- VISTA: DASHBOARD -->
         <section id="view-dashboard" class="view active">
             <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="luxury-card p-4">
-                    <p class="text-[9px] font-bold text-gray-500 uppercase">Citas Hoy</p>
+                <div class="luxury-card p-5">
+                    <p class="text-[9px] font-bold text-gray-600 uppercase">Citas Hoy</p>
                     <p class="text-3xl font-black" id="stat-citas">0</p>
                 </div>
-                <div class="luxury-card p-4 border-l-2 border-red-500">
-                    <p class="text-[9px] font-bold text-gray-500 uppercase">Firmas</p>
+                <div class="luxury-card p-5 border-l-4 border-red-500">
+                    <p class="text-[9px] font-bold text-gray-600 uppercase">Firmas</p>
                     <p class="text-3xl font-black text-white" id="stat-firmas">0</p>
                 </div>
             </div>
 
-            <div class="luxury-card p-6 text-center">
-                <p class="text-[10px] font-bold text-red-500 uppercase mb-4 tracking-widest">QR Consentimiento</p>
-                <div id="qrcode-container" class="mb-4 shadow-2xl">
+            <div class="luxury-card p-8 text-center">
+                <p class="text-[10px] font-bold text-red-500 uppercase mb-5 tracking-widest italic">Acceso Consentimiento</p>
+                <div id="qrcode-box" class="shadow-2xl mb-6 flex items-center justify-center overflow-hidden">
                     <div id="qrcode"></div>
                 </div>
-                <p class="text-[10px] text-gray-500 px-6 mb-6 leading-relaxed">El cliente debe escanear este código para firmar el consentimiento legal.</p>
-                <button onclick="window.compartirURL()" class="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-bold uppercase tracking-widest active:bg-white/10">Compartir URL</button>
+                <p class="text-[10px] text-gray-500 px-4 mb-8 leading-relaxed">Escanea para firmar el consentimiento legal desde el móvil del cliente.</p>
+                <button onclick="window.compartirURL()" class="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-bold uppercase tracking-widest active:bg-white/10 transition-colors">Compartir Enlace</button>
             </div>
         </section>
 
         <!-- VISTA: AGENDA -->
         <section id="view-agenda" class="view">
-            <h3 class="text-lg font-black mb-4 italic uppercase flex items-center gap-2">Agenda</h3>
+            <h3 class="text-lg font-black mb-5 italic uppercase flex items-center gap-3">
+                <span class="w-1.5 h-6 bg-red-500 rounded-full"></span> Próximas Citas
+            </h3>
             <div id="agenda-list" class="space-y-4">
-                <p class="text-center text-gray-600 py-10 text-xs">Sincronizando...</p>
+                <p class="text-center text-gray-700 py-12 text-xs">Sincronizando agenda...</p>
             </div>
         </section>
 
         <!-- VISTA: CALCULADORA PRO -->
         <section id="view-calc" class="view">
-            <h3 class="text-lg font-black mb-4 italic uppercase">Calculadora Pro</h3>
-            <div class="luxury-card p-6 space-y-6">
+            <h3 class="text-lg font-black mb-5 italic uppercase">Calculadora Ajustada</h3>
+            <div class="luxury-card p-7 space-y-7">
                 <div>
-                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-2 block tracking-widest">Tamaño aprox. (cm)</label>
-                    <input type="number" id="calc-cm" value="5" class="w-full rounded-xl p-4 text-xl font-black outline-none border-white/5">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-2 block tracking-widest">Tamaño (cm)</label>
+                    <input type="number" id="calc-cm" value="5" class="w-full rounded-xl p-4 text-2xl font-black border-white/5">
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-3 block tracking-widest text-red-500">Estilos Aplicados</label>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-3 block tracking-widest text-red-500">Estilos (Varios)</label>
                     <div class="grid grid-cols-2 gap-2" id="style-grid">
                         <button onclick="window.toggleStyle(this, 1.0)" class="style-btn p-3 border border-white/5 rounded-xl text-[10px] font-bold uppercase bg-white/5">Lineal</button>
                         <button onclick="window.toggleStyle(this, 1.5)" class="style-btn p-3 border border-white/5 rounded-xl text-[10px] font-bold uppercase bg-white/5">Anime B&G</button>
@@ -154,33 +174,33 @@
                     </div>
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-3 block tracking-widest">Complejidad Extra</label>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-3 block tracking-widest">Complejidad Detalle</label>
                     <div class="grid grid-cols-3 gap-2">
-                        <button onclick="window.toggleComp(this, 0)" class="comp-btn selected p-3 border border-white/5 rounded-xl text-[9px] font-bold uppercase bg-white/5">Básica</button>
-                        <button onclick="window.toggleComp(this, 0.20)" class="comp-btn p-3 border border-white/5 rounded-xl text-[9px] font-bold uppercase bg-white/5">Media (+20%)</button>
+                        <button onclick="window.toggleComp(this, 0)" class="comp-btn selected p-3 border border-white/5 rounded-xl text-[9px] font-bold uppercase bg-white/5">Básico</button>
+                        <button onclick="window.toggleComp(this, 0.20)" class="comp-btn p-3 border border-white/5 rounded-xl text-[9px] font-bold uppercase bg-white/5">Medio (+20%)</button>
                         <button onclick="window.toggleComp(this, 0.45)" class="comp-btn p-3 border border-white/5 rounded-xl text-[9px] font-bold uppercase bg-white/5">Pro (+45%)</button>
                     </div>
                 </div>
                 <div class="pt-6 border-t border-white/5 flex justify-between items-end">
                     <div>
-                        <p class="text-[10px] font-bold text-gray-500 uppercase">Presupuesto</p>
+                        <p class="text-[10px] font-bold text-gray-600 uppercase">Presupuesto</p>
                         <p class="text-5xl font-black text-red-500" id="calc-res">40€</p>
                     </div>
-                    <p class="text-[9px] text-gray-600 mb-2 uppercase italic" id="calc-info">Min. 40€</p>
+                    <p class="text-[9px] text-gray-500 mb-2 uppercase italic">Mínimo 40€</p>
                 </div>
             </div>
         </section>
 
         <!-- VISTA: STOCK -->
         <section id="view-stock" class="view">
-            <h3 class="text-lg font-black mb-4 italic uppercase">Materiales</h3>
+            <h3 class="text-lg font-black mb-5 italic uppercase">Inventario</h3>
             <div class="luxury-card overflow-hidden">
                 <table class="w-full text-left text-xs">
                     <thead>
-                        <tr class="bg-white/5 text-[8px] font-bold text-gray-500 uppercase">
-                            <th class="p-4">Material</th>
-                            <th class="p-4 text-center">Cant.</th>
-                            <th class="p-4 text-right">Ajuste</th>
+                        <tr class="bg-white/5 text-[8px] font-bold text-gray-600 uppercase">
+                            <th class="p-5">Material</th>
+                            <th class="p-5 text-center">Stock</th>
+                            <th class="p-5 text-right">Sumar</th>
                         </tr>
                     </thead>
                     <tbody id="stock-list"></tbody>
@@ -188,39 +208,39 @@
             </div>
         </section>
 
-        <!-- VISTA: FIRMAS (ADMIN) -->
+        <!-- VISTA: FIRMAS -->
         <section id="view-history" class="view">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-black italic uppercase text-red-500">Firmas Recibidas</h3>
-                <button onclick="window.verModelo()" class="text-[9px] text-gray-400 font-bold border border-white/10 px-3 py-1 rounded-full uppercase">Modelo Legal</button>
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-lg font-black italic uppercase text-red-500">Documentos</h3>
+                <button onclick="window.verModelo()" class="text-[9px] text-gray-500 font-bold border border-white/10 px-4 py-2 rounded-full uppercase">Leer Contrato</button>
             </div>
             <div id="firmas-list" class="space-y-4"></div>
         </section>
 
-        <!-- VISTA: CLIENTE (FIRMA LEGAL) -->
+        <!-- CLIENTE: FORMULARIO LEGAL -->
         <section id="view-client-consent" class="view">
             <div class="text-center mb-8">
-                <div class="w-16 h-16 text-red-500 mx-auto mb-4">
+                <div class="w-12 h-12 text-red-500 mx-auto mb-3">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 9h6l-5 4 2 8-6-5-6 5 2-8-5-4h6l3-9z"/></svg>
                 </div>
-                <h2 class="text-2xl font-black italic text-red-500 uppercase">eidentattoo</h2>
-                <p class="text-[8px] text-gray-500 tracking-[0.4em] uppercase">Consentimiento Sanitario Oficial</p>
+                <h2 class="text-xl font-black italic text-red-500 uppercase tracking-widest">eidentattoo</h2>
+                <p class="text-[8px] text-gray-500 uppercase tracking-[0.4em]">Consentimiento Sanitario Oficial</p>
             </div>
             
-            <div class="luxury-card p-5 space-y-4">
-                <div id="legal-text-display" class="text-[10px] text-gray-400 bg-black p-4 rounded-xl leading-relaxed border border-white/5 h-48 overflow-y-auto legal-scroll">
-                    <!-- Texto legal inyectado por JS -->
+            <div class="luxury-card p-6 space-y-5">
+                <div id="legal-text-box" class="text-[10px] text-gray-400 bg-black p-4 rounded-xl leading-relaxed border border-white/5 h-48 overflow-y-auto legal-scroll">
+                    <!-- Texto legal inyectado -->
                 </div>
 
                 <div class="grid grid-cols-1 gap-3">
-                    <input type="text" id="c-name" placeholder="Nombre y Apellidos" class="w-full rounded-xl p-4 text-xs font-bold border-white/10 outline-none">
+                    <input type="text" id="c-name" placeholder="Nombre completo" class="w-full rounded-xl p-4 text-xs font-bold border-white/10 outline-none">
                     <input type="text" id="c-dni" placeholder="DNI / NIE" class="w-full rounded-xl p-4 text-xs font-bold border-white/10 outline-none">
                 </div>
 
                 <div class="relative">
-                    <p class="text-[9px] font-bold text-gray-500 uppercase mb-2">Firma del Cliente:</p>
+                    <p class="text-[9px] font-bold text-gray-500 uppercase mb-2">Firma Digital del Cliente:</p>
                     <canvas id="sig-pad"></canvas>
-                    <button onclick="window.clearSig()" class="absolute bottom-2 right-2 text-[8px] text-gray-500 font-bold border border-white/10 px-2 py-1 rounded">BORRAR</button>
+                    <button onclick="window.clearSig()" class="absolute bottom-2 right-2 text-[8px] text-gray-500 font-bold border border-white/10 px-3 py-2 rounded-lg bg-black/50">BORRAR</button>
                 </div>
 
                 <button id="btn-save-sig" onclick="window.saveSig()" class="w-full py-5 btn-primary rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-red-500/20">CONFIRMAR Y FIRMAR</button>
@@ -230,42 +250,42 @@
     </main>
 
     <!-- Modal: Nueva Cita -->
-    <div id="modal-cita" class="fixed inset-0 bg-black/95 z-[120] hidden flex items-center justify-center p-6">
-        <div class="luxury-card p-6 w-full max-w-sm border-red-500/30">
-            <h2 class="text-sm font-black text-red-500 mb-4 uppercase italic tracking-widest">Agendar Sesión</h2>
-            <div class="space-y-3">
-                <input type="text" id="new-client" placeholder="Cliente" class="w-full rounded-xl p-3 text-xs font-bold outline-none border-white/10">
-                <input type="tel" id="new-tel" placeholder="WhatsApp" class="w-full rounded-xl p-3 text-xs font-bold outline-none border-white/10">
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="date" id="new-date" class="w-full rounded-xl p-3 text-[10px] font-bold outline-none border-white/10">
-                    <input type="time" id="new-time" class="w-full rounded-xl p-3 text-[10px] font-bold outline-none border-white/10">
+    <div id="modal-cita" class="fixed inset-0 bg-black/98 z-[1200] hidden flex items-center justify-center p-6">
+        <div class="luxury-card p-7 w-full max-w-sm border-red-500/30">
+            <h2 class="text-sm font-black text-red-500 mb-5 uppercase italic tracking-widest">Añadir Cita</h2>
+            <div class="space-y-4">
+                <input type="text" id="new-client" placeholder="Cliente" class="w-full rounded-xl p-4 text-xs font-bold border-white/10">
+                <input type="tel" id="new-tel" placeholder="WhatsApp" class="w-full rounded-xl p-4 text-xs font-bold border-white/10">
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="date" id="new-date" class="w-full rounded-xl p-4 text-[10px] font-bold border-white/10">
+                    <input type="time" id="new-time" class="w-full rounded-xl p-4 text-[10px] font-bold border-white/10">
                 </div>
-                <div class="flex gap-2 pt-2">
-                    <button onclick="window.abrirModalCita()" class="flex-1 py-3 bg-white/5 rounded-xl text-[10px] font-bold uppercase">Cerrar</button>
-                    <button onclick="window.guardarCita()" class="flex-1 py-3 btn-primary rounded-xl text-[10px] font-bold uppercase">Guardar</button>
+                <div class="flex gap-3 pt-2">
+                    <button onclick="window.abrirModalCita()" class="flex-1 py-4 bg-white/5 rounded-xl text-[10px] font-bold uppercase">Cerrar</button>
+                    <button onclick="window.guardarCita()" class="flex-1 py-4 btn-primary rounded-xl text-[10px] font-bold uppercase">Guardar</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Modal: Ver Modelo Legal -->
-    <div id="modal-legal" class="fixed inset-0 bg-black/98 z-[130] hidden flex items-center justify-center p-6">
+    <div id="modal-legal" class="fixed inset-0 bg-black/99 z-[1300] hidden flex items-center justify-center p-6">
         <div class="luxury-card p-8 w-full max-w-md border-red-500/30">
-            <h2 class="text-xs font-black text-red-500 mb-4 uppercase italic tracking-tighter">Contrato de Consentimiento</h2>
-            <div id="legal-text-modal" class="text-[9px] text-gray-500 leading-relaxed mb-6 h-80 overflow-y-auto legal-scroll"></div>
-            <button onclick="window.verModelo()" class="w-full py-4 btn-primary rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg">CERRAR</button>
+            <h2 class="text-xs font-black text-red-500 mb-5 uppercase italic">Modelo de Contrato</h2>
+            <div id="legal-text-modal" class="text-[9px] text-gray-500 leading-relaxed mb-8 h-80 overflow-y-auto legal-scroll pr-3"></div>
+            <button onclick="window.verModelo()" class="w-full py-5 btn-primary rounded-2xl text-[10px] font-black uppercase tracking-widest">CERRAR</button>
         </div>
     </div>
 
-    <!-- Navegación Global (Móvil) -->
-    <nav id="nav-bar" class="fixed bottom-0 left-0 right-0 flex justify-around items-center p-4 z-50 bg-black/95 backdrop-blur-lg border-t border-white/5">
+    <!-- Barra de Navegación Global -->
+    <nav id="nav-bar" class="fixed bottom-0 left-0 right-0 flex justify-around items-center p-4 z-50 bg-black/95 backdrop-blur-xl border-t border-white/5">
         <button onclick="window.irA('dashboard')" class="nav-item active" data-view="dashboard">
             <svg class="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2"/></svg>
-            <span class="text-[7px] font-black uppercase">Inicio</span>
+            <span class="text-[7px] font-black uppercase">Panel</span>
         </button>
         <button onclick="window.irA('agenda')" class="nav-item" data-view="agenda">
             <svg class="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2"/></svg>
-            <span class="text-[7px] font-black uppercase">Agenda</span>
+            <span class="text-[7px] font-black uppercase">Citas</span>
         </button>
         <button onclick="window.irA('calc')" class="nav-item" data-view="calc">
             <svg class="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-width="2"/></svg>
@@ -281,7 +301,7 @@
         </button>
     </nav>
 
-    <!-- Scripts y Firebase -->
+    <!-- Librerías Externas -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <script type="importmap">
     { "imports": {
@@ -297,28 +317,25 @@
         import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, doc, updateDoc, deleteDoc } from "firebase/firestore";
 
         const firebaseConfig = JSON.parse(__firebase_config);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'eiden-tattoo-production';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'eiden-tattoo-v8-final';
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- CONTRATO LEGAL ---
-        const TEXTO_LEGAL = `
-            <p class="font-bold text-red-500 mb-2 underline uppercase tracking-widest">1. INFORMACIÓN DEL PROCEDIMIENTO</p>
-            <p>Solicito a <strong>Aída Gómez (eidentattoo)</strong> la realización de un tatuaje. Comprendo que es una técnica irreversible y que la eliminación total no siempre es posible.</p>
-            
-            <p class="font-bold text-white mt-4 mb-1 uppercase tracking-widest">2. RIESGOS Y COMPLICACIONES</p>
-            <p>Acepto los riesgos inherentes: infecciones, reacciones alérgicas a pigmentos o cicatrices anómalas. Se utiliza material estéril de un solo uso.</p>
-            
-            <p class="font-bold text-red-500 mt-4 mb-1 uppercase underline italic tracking-widest">3. DECLARACIÓN DE SALUD (CRÍTICO)</p>
-            <p><strong>CONFIRMO NO PADECER:</strong> VIH, Hepatitis B/C, diabetes no controlada, epilepsia, cardiopatías graves, enfermedades de la piel en la zona o alergias graves. No estoy bajo efectos de alcohol o drogas.</p>
-            
-            <p class="font-bold text-white mt-4 mb-1 uppercase tracking-widest">4. PRECIO Y RGPD</p>
-            <p>El <strong>mínimo de sesión es de 40€</strong>. Mis datos se tratarán conforme al RGPD para gestión sanitaria del estudio.</p>
+        // --- MODELO LEGAL OFICIAL ---
+        const CONTRATO_TEXTO = `
+            <p class="font-bold text-red-500 mb-3 underline uppercase tracking-widest">1. INFORMACIÓN DEL PROCEDIMIENTO</p>
+            <p>Solicito a <strong>Aída Gómez (eidentattoo)</strong> la realización de un tatuaje. Entiendo que es una técnica irreversible y que la eliminación no siempre es satisfactoria.</p>
+            <p class="font-bold text-white mt-5 mb-2 uppercase tracking-widest">2. RIESGOS Y COMPLICACIONES</p>
+            <p>Acepto riesgos de infección, alergias a tintas o cicatrización defectuosa. El estudio cumple con toda la normativa de higiene y material estéril.</p>
+            <p class="font-bold text-red-500 mt-5 mb-2 uppercase underline italic tracking-widest">3. DECLARACIÓN MÉDICA (CRÍTICO)</p>
+            <p><strong>CONFIRMO NO PADECER:</strong> VIH, Hepatitis B/C, diabetes, epilepsia, cardiopatías o alergias graves a metales. No estoy bajo influencia de sustancias.</p>
+            <p class="font-bold text-white mt-5 mb-2 uppercase tracking-widest">4. PRECIO Y PRIVACIDAD</p>
+            <p>El <strong>mínimo de sesión es de 40€</strong>. Mis datos serán tratados bajo el RGPD para control sanitario del estudio eidentattoo.</p>
         `;
 
-        let activeMultipliers = [];
-        let complexityBonus = 0;
+        let activeStyles = [];
+        let compBonus = 0;
 
         // --- NAVEGACIÓN ---
         window.irA = (v) => {
@@ -333,33 +350,32 @@
         // --- CALCULADORA ---
         window.toggleStyle = (btn, multi) => {
             btn.classList.toggle('selected');
-            const idx = activeMultipliers.indexOf(multi);
-            if(idx > -1) activeMultipliers.splice(idx, 1); else activeMultipliers.push(multi);
+            const idx = activeStyles.indexOf(multi);
+            if(idx > -1) activeStyles.splice(idx, 1); else activeStyles.push(multi);
             window.recalc();
         };
 
         window.toggleComp = (btn, bonus) => {
             document.querySelectorAll('.comp-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
-            complexityBonus = bonus;
+            compBonus = bonus;
             window.recalc();
         };
 
         window.recalc = () => {
             const cm = parseFloat(document.getElementById('calc-cm').value) || 0;
-            const count = activeMultipliers.length;
+            const count = activeStyles.length;
             if(count === 0) {
                 document.getElementById('calc-res').innerText = "40€";
                 document.getElementById('calc-info').innerText = "Min. 40€";
                 return;
             }
-            const maxM = Math.max(...activeMultipliers);
-            // Ajuste Lineal: Tasa reducida si es el estilo predominante
-            const cmRate = maxM === 1.0 ? 3.0 : 4.5;
-            const mixBonus = (count - 1) * 0.15;
-            let total = (40 + (cm * cmRate)) * maxM * (1 + mixBonus) * (1 + complexityBonus);
+            const maxM = Math.max(...activeStyles);
+            const rate = maxM === 1.0 ? 3.0 : 4.5; // Ajuste para lineal
+            const extraMix = (count - 1) * 0.15;
+            let total = (40 + (cm * rate)) * maxM * (1 + extraMix) * (1 + compBonus);
             document.getElementById('calc-res').innerText = Math.max(40, Math.round(total)) + '€';
-            document.getElementById('calc-info').innerText = `Estilos: ${count} | +${Math.round(complexityBonus*100)}% comp.`;
+            document.getElementById('calc-info').innerText = `Estilos: ${count} | +${Math.round(compBonus*100)}% detalle`;
         };
         document.getElementById('calc-cm').addEventListener('input', window.recalc);
 
@@ -370,7 +386,7 @@
             if(!canvas) return;
             ctx = canvas.getContext('2d');
             canvas.width = canvas.offsetWidth;
-            canvas.height = 240;
+            canvas.height = 230;
             ctx.lineWidth = 3; ctx.strokeStyle = "#000"; ctx.lineCap = "round";
             const getPos = (e) => {
                 const rect = canvas.getBoundingClientRect();
@@ -392,11 +408,11 @@
                 await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'consentimientos'), {
                     cliente: name, dni: dni, firma: canvas.toDataURL(), timestamp: serverTimestamp()
                 });
-                document.getElementById('view-client-consent').innerHTML = `<div class="p-10 text-center"><div class="text-5xl mb-4">✅</div><h2 class="text-xl font-bold text-red-500 uppercase italic">¡Firmado!</h2><p class="text-[10px] text-gray-500 mt-2">Gracias, el proceso legal ha terminado.</p></div>`;
+                document.getElementById('view-client-consent').innerHTML = `<div class="p-12 text-center animate-bounce"><div class="text-6xl mb-6">✅</div><h2 class="text-2xl font-black text-red-500 uppercase italic">¡Firmado!</h2><p class="text-[10px] text-gray-500 mt-2 tracking-widest">Gracias. Proceso finalizado.</p></div>`;
             } catch(e) { alert("Error de red"); document.getElementById('btn-save-sig').disabled = false; }
         };
 
-        // --- DASHBOARD & QR ---
+        // --- QR ---
         window.initQR = () => {
             const url = window.location.origin + window.location.pathname + '?mode=client';
             const qr = qrcode(0, 'H'); qr.addData(url); qr.make();
@@ -405,74 +421,66 @@
         window.compartirURL = () => {
             const url = window.location.origin + window.location.pathname + '?mode=client';
             if(navigator.share) navigator.share({title: 'Firma eidentattoo', url});
-            else { navigator.clipboard.writeText(url); alert("Copiado al portapapeles"); }
+            else { navigator.clipboard.writeText(url); alert("Enlace copiado"); }
         };
 
-        // --- GESTIÓN CITA ---
         window.abrirModalCita = () => document.getElementById('modal-cita').classList.toggle('hidden');
         window.guardarCita = async () => {
             const n = document.getElementById('new-client').value;
             const t = document.getElementById('new-tel').value;
             const d = document.getElementById('new-date').value;
             const h = document.getElementById('new-time').value;
-            if(!n || !t || !d) return alert("Datos insuficientes.");
+            if(!n || !t || !d) return alert("Faltan datos.");
             try {
                 await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'agenda'), {
                     nombre: n, telefono: t, fecha: d, hora: h, timestamp: serverTimestamp()
                 });
                 window.abrirModalCita();
-                document.getElementById('new-client').value = '';
-                document.getElementById('new-tel').value = '';
+                document.getElementById('new-client').value = ''; document.getElementById('new-tel').value = '';
             } catch(e) { alert("Error"); }
         };
         window.verModelo = () => document.getElementById('modal-legal').classList.toggle('hidden');
 
         // --- SINCRONIZACIÓN ---
         function startSync() {
-            document.getElementById('legal-text-display').innerHTML = TEXTO_LEGAL;
-            document.getElementById('legal-text-modal').innerHTML = TEXTO_LEGAL;
+            document.getElementById('legal-text-box').innerHTML = CONTRATO_TEXTO;
+            document.getElementById('legal-text-modal').innerHTML = CONTRATO_TEXTO;
 
-            // Agenda
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'agenda'), (snap) => {
-                const list = document.getElementById('agenda-list');
-                list.innerHTML = '';
+                const list = document.getElementById('agenda-list'); list.innerHTML = '';
                 snap.forEach(d => {
                     const c = d.data();
-                    const fecha = new Date(c.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
-                    const waMsg = encodeURIComponent(`Hola ${c.nombre}, soy Aída de eidentattoo. Confirmo nuestra cita el día ${fecha} a las ${c.hora}. ¿Confirmas asistencia?`);
+                    const fch = new Date(c.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+                    const waMsg = encodeURIComponent(`Hola ${c.nombre}, soy Aída de eidentattoo. Confirmo nuestra cita el día ${fch} a las ${c.hora}. ¿Confirmas asistencia?`);
                     const waUrl = `https://wa.me/${c.telefono.replace(/\s/g, '')}?text=${waMsg}`;
                     list.innerHTML += `
-                        <div class="luxury-card p-4 flex justify-between items-center border-l-4 border-red-500">
-                            <div><h4 class="font-bold text-sm uppercase italic">${c.nombre}</h4><p class="text-[9px] text-gray-500">${fecha} • ${c.hora || '10:00'}</p></div>
+                        <div class="luxury-card p-5 flex justify-between items-center border-l-4 border-red-500">
+                            <div><h4 class="font-bold text-sm uppercase italic">${c.nombre}</h4><p class="text-[9px] text-gray-600">${fch} • ${c.hora || '10:00'}</p></div>
                             <div class="flex gap-2">
                                 <a href="${waUrl}" target="_blank" class="w-10 h-10 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center border border-green-500/20 active:scale-90 transition-transform">
                                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.93.55 3.72 1.5 5.25L2 22l4.75-1.5c1.53.95 3.32 1.5 5.25 1.5 5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
                                 </a>
-                                <button onclick="window.borrarCita('${d.id}')" class="w-10 h-10 bg-white/5 text-gray-400 rounded-full flex items-center justify-center border border-white/10 active:scale-90"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2"/></svg></button>
+                                <button onclick="window.borrarCita('${d.id}')" class="w-10 h-10 bg-white/5 text-gray-500 rounded-full flex items-center justify-center border border-white/10 active:scale-90 transition-transform"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round"/></svg></button>
                             </div>
                         </div>`;
                 });
                 document.getElementById('stat-citas').innerText = snap.size;
             });
 
-            // Stock
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'stock'), (snap) => {
-                const list = document.getElementById('stock-list');
-                list.innerHTML = '';
+                const list = document.getElementById('stock-list'); list.innerHTML = '';
                 snap.forEach(d => {
                     const s = d.data();
-                    list.innerHTML += `<tr class="border-t border-white/5"><td class="p-4 font-bold text-gray-400 uppercase text-[9px] italic">${s.nombre}</td><td class="p-4 text-center font-black ${s.cantidad < 5 ? 'text-red-500' : 'text-white'}">${s.cantidad}</td><td class="p-4 text-right"><button onclick="window.upSt('${d.id}', ${s.cantidad+1})" class="px-3 py-1 bg-red-500/10 rounded-full border border-red-500/20 text-red-500 font-bold active:scale-90 transition-transform">+</button></td></tr>`;
+                    list.innerHTML += `<tr class="border-t border-white/5"><td class="p-5 font-bold text-gray-400 uppercase text-[9px] italic tracking-tighter">${s.nombre}</td><td class="p-5 text-center font-black ${s.cantidad < 5 ? 'text-red-500' : 'text-white'}">${s.cantidad}</td><td class="p-5 text-right"><button onclick="window.upSt('${d.id}', ${s.cantidad+1})" class="px-4 py-2 bg-red-500/10 rounded-full border border-red-500/20 text-red-500 font-bold active:scale-90 transition-transform shadow-md shadow-red-500/5">+</button></td></tr>`;
                 });
             });
 
-            // Firmas
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'consentimientos'), (snap) => {
-                const list = document.getElementById('firmas-list');
-                list.innerHTML = '';
+                const list = document.getElementById('firmas-list'); list.innerHTML = '';
                 snap.forEach(d => {
                     const f = d.data();
                     const fch = f.timestamp ? new Date(f.timestamp.seconds*1000).toLocaleDateString() : 'Hoy';
-                    list.innerHTML += `<div class="luxury-card p-4"><div class="flex justify-between items-start mb-2"><div><p class="font-bold text-xs uppercase italic">${f.cliente}</p><p class="text-[8px] text-gray-500">${f.dni}</p></div><span class="text-[8px] text-gray-600">${fch}</span></div><img src="${f.firma}" class="w-full bg-white rounded-lg h-24 object-contain invert border border-white/5 shadow-inner"></div>`;
+                    list.innerHTML += `<div class="luxury-card p-5"><div class="flex justify-between items-start mb-3"><div><p class="font-bold text-xs uppercase italic tracking-tight">${f.cliente}</p><p class="text-[8px] text-gray-500">${f.dni}</p></div><span class="text-[8px] text-gray-700">${fch}</span></div><img src="${f.firma}" class="w-full bg-white rounded-lg h-28 object-contain invert border border-white/5 shadow-inner"></div>`;
                 });
                 document.getElementById('stat-firmas').innerText = snap.size;
             });
@@ -481,11 +489,16 @@
         window.upSt = async (id, v) => await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', id), { cantidad: v });
         window.borrarCita = async (id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agenda', id)); };
 
-        // --- INIT ---
-        const safetyLoader = setTimeout(() => {
-            document.getElementById('splash').classList.add('opacity-0');
-            setTimeout(() => document.getElementById('splash').remove(), 700);
-        }, 3000);
+        // --- MANEJO DE CARGA Y ERRORES ---
+        const hideSplash = () => {
+            const splash = document.getElementById('splash');
+            splash.classList.add('hide-loader');
+            // IMPORTANTE: Eliminarlo del flujo para que no bloquee los clics
+            setTimeout(() => splash.style.display = 'none', 600);
+        };
+
+        // Seguro contra bloqueos: máximo 3 segundos de espera
+        const safetyTimeout = setTimeout(hideSplash, 3000);
 
         onAuthStateChanged(auth, async (u) => {
             if(u) {
@@ -494,9 +507,8 @@
                 if(isCl) { document.body.classList.add('client-mode'); window.irA('client-consent'); }
                 else { window.irA('dashboard'); }
                 
-                clearTimeout(safetyLoader);
-                document.getElementById('splash').style.opacity='0';
-                setTimeout(()=>document.getElementById('splash').remove(), 700);
+                clearTimeout(safetyTimeout);
+                hideSplash();
             } else { await signInAnonymously(auth); }
         });
     </script>
