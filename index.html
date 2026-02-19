@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>eidentattoo | Aída Gómez</title>
     
-    <!-- Configuración Icono de Escritorio -->
+    <!-- Configuración PWA e Icono -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="eidentattoo">
+    <!-- Icono solicitado: Máquina Pen Roja -->
     <link rel="apple-touch-icon" href="https://i.ibb.co/LzNfXN8/tattoo-pen-red.png">
     <link rel="icon" type="image/png" href="https://i.ibb.co/LzNfXN8/tattoo-pen-red.png">
 
-    <!-- Estilos Luxury -->
+    <!-- Fonts & Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
@@ -26,48 +27,50 @@
             color: #fff;
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .luxury-card {
             background: #0a0a0a;
             border: 1px solid #1a1a1a;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 1);
+            border-radius: 2rem;
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,1);
         }
 
-        .btn-primary { background: var(--accent); color: white; transition: 0.2s; border-radius: 1rem; font-weight: 800; }
+        .btn-primary { background: var(--accent); color: white; transition: 0.2s; border-radius: 1rem; font-weight: 800; border: none; }
         .btn-primary:active { transform: scale(0.96); opacity: 0.8; }
 
-        .nav-item { color: #444; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px; border: none; background: none; cursor: pointer; }
+        .nav-item { color: #333; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; flex: 1; }
         .nav-item.active { color: var(--accent); }
 
-        /* QR visible fix */
+        /* QR FIX DEFINITIVO */
         #qrcode-box {
             background: white;
-            padding: 12px;
+            padding: 10px;
             border-radius: 1.5rem;
             display: inline-flex;
-            width: 210px;
-            height: 210px;
+            width: 200px;
+            height: 200px;
             margin: 0 auto;
             justify-content: center;
             align-items: center;
         }
-        #qrcode-box img { width: 100% !important; height: auto !important; }
+        #qrcode-box img { width: 100% !important; height: 100% !important; border-radius: 0.5rem; }
 
-        canvas { background: #fff; width: 100%; height: 260px; border-radius: 1.5rem; cursor: crosshair; touch-action: none; border: 1px solid #333; }
+        /* Canvas Firma */
+        #sig-canvas { background: #fff; width: 100%; height: 260px; border-radius: 1.5rem; cursor: crosshair; touch-action: none; border: 1px solid #333; }
 
-        .view { display: none; padding-bottom: 120px; }
-        .view.active { display: block; animation: fadeIn 0.3s ease; }
+        /* Gestión de Vistas */
+        .view { display: none; padding-bottom: 120px; width: 100%; }
+        .view.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; } }
 
-        /* Modo Cliente Estricto */
+        /* MODO CLIENTE: Bloqueo de navegación */
         .client-mode #nav-bar, .client-mode .admin-only { display: none !important; }
         .client-mode #view-consent { display: block !important; padding-bottom: 40px; }
 
-        .style-btn.selected {
+        .style-btn.selected, .comp-btn.selected {
             background: var(--accent) !important;
             border-color: var(--accent) !important;
             color: white !important;
@@ -77,37 +80,37 @@
             background: #000 !important;
             border: 1px solid #1a1a1a !important;
             color: white !important;
-            padding: 14px;
+            padding: 12px;
             border-radius: 12px;
             width: 100%;
         }
 
         .legal-box {
             font-size: 11px;
-            line-height: 1.6;
-            color: #aaa;
+            line-height: 1.5;
+            color: #999;
             background: #050505;
             padding: 20px;
             border-radius: 1.2rem;
             border: 1px solid #111;
-            max-height: 240px;
+            max-height: 220px;
             overflow-y: auto;
         }
 
-        header svg { color: var(--accent); }
+        .safe-area-bottom { padding-bottom: calc(env(safe-area-inset-bottom) + 24px); }
     </style>
 </head>
 <body class="bg-black">
 
     <main id="app" class="max-w-md mx-auto p-5">
         
-        <!-- Dashboard Admin -->
+        <!-- Header Principal (Aída) -->
         <header class="admin-only flex justify-between items-center mb-8 pt-4">
             <div>
                 <p class="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em]">Aída Gómez</p>
-                <h2 class="text-2xl font-black italic tracking-tighter uppercase">eidentattoo</h2>
+                <h1 class="text-2xl font-black italic tracking-tighter uppercase">eidentattoo</h1>
             </div>
-            <button onclick="window.abrirModalCita()" class="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center border border-red-500/20 active:scale-90">
+            <button onclick="window.abrirCita()" class="w-11 h-11 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 border border-red-500/20 active:scale-90">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M12 4v16m8-8H4" stroke-linecap="round"/></svg>
             </button>
         </header>
@@ -115,44 +118,44 @@
         <!-- DASHBOARD -->
         <section id="view-dashboard" class="view active">
             <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="luxury-card p-5">
+                <div class="luxury-card p-5 text-center">
                     <p class="text-[9px] font-bold text-gray-500 uppercase mb-1">Citas Hoy</p>
                     <p class="text-3xl font-black" id="stat-citas">0</p>
                 </div>
-                <div class="luxury-card p-5 border-l-4 border-red-500">
-                    <p class="text-[9px] font-bold text-gray-500 uppercase mb-1">Stock</p>
-                    <p class="text-3xl font-black text-white" id="stat-stock">ALERTA</p>
+                <div class="luxury-card p-5 border-l-4 border-red-500 text-center">
+                    <p class="text-[9px] font-bold text-gray-500 uppercase mb-1">Material</p>
+                    <p class="text-2xl font-black text-white" id="stat-stock">OK</p>
                 </div>
             </div>
 
             <div class="luxury-card p-8 text-center">
-                <p class="text-[10px] font-bold text-red-500 uppercase mb-5 tracking-widest italic">Acceso Clientes</p>
+                <p class="text-[10px] font-bold text-red-500 uppercase mb-5 tracking-widest italic text-center">Firma de Clientes</p>
                 <div id="qrcode-box" class="shadow-2xl mb-6">
                     <div id="qrcode"></div>
                 </div>
-                <p class="text-[11px] text-gray-500 px-4 mb-8 leading-relaxed">Escanea esto para que el cliente firme el consentimiento oficial en su móvil.</p>
-                <button onclick="window.compartirApp()" class="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-bold uppercase tracking-widest active:bg-white/10">Copiar Enlace</button>
+                <p class="text-[11px] text-gray-500 px-4 mb-8 leading-relaxed">Escanea esto para que el cliente firme el contrato sanitario oficial en su móvil.</p>
+                <button onclick="window.compartirURL()" class="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-bold uppercase tracking-widest active:bg-white/10">Copiar Enlace</button>
             </div>
         </section>
 
         <!-- AGENDA -->
         <section id="view-agenda" class="view">
-            <h3 class="text-lg font-black mb-5 italic uppercase text-red-500">Agenda</h3>
+            <h3 class="text-lg font-black mb-5 italic uppercase text-red-500 tracking-tighter">Agenda de Sesiones</h3>
             <div id="agenda-list" class="space-y-4">
-                <p class="text-center text-gray-700 py-12 text-xs">Cargando datos...</p>
+                <p class="text-center text-gray-700 py-12 text-xs">Cargando agenda...</p>
             </div>
         </section>
 
         <!-- CALCULADORA -->
         <section id="view-calc" class="view">
-            <h3 class="text-lg font-black mb-5 italic uppercase">Calculadora</h3>
+            <h3 class="text-lg font-black mb-5 italic uppercase text-white tracking-tighter">Calculadora Pro</h3>
             <div class="luxury-card p-7 space-y-6">
                 <div>
-                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-2 block tracking-widest">Tamaño (cm alto)</label>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-2 block">Tamaño aproximado (cm)</label>
                     <input type="number" id="calc-cm" value="5" class="text-2xl font-black">
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-3 block text-red-500 tracking-widest">Estilos</label>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-3 block text-red-500">Estilos (Selección Múltiple)</label>
                     <div class="grid grid-cols-2 gap-2" id="style-grid">
                         <button onclick="window.toggleStyle(this, 1.0)" class="style-btn p-3 border border-white/5 rounded-xl text-[10px] font-bold uppercase bg-white/5">Lineal (3€/cm)</button>
                         <button onclick="window.toggleStyle(this, 1.5)" class="style-btn p-3 border border-white/5 rounded-xl text-[10px] font-bold uppercase bg-white/5">Anime B&G</button>
@@ -162,29 +165,33 @@
                     </div>
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-3 block tracking-widest">Plus % Complejidad</label>
-                    <input type="number" id="calc-extra" value="0" placeholder="Ej: 20">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-3 block">Complejidad Extra %</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="window.setComp(this, 0)" class="comp-btn selected p-3 border border-white/5 rounded-xl text-[9px] font-bold uppercase bg-white/5">0%</button>
+                        <button onclick="window.setComp(this, 20)" class="comp-btn p-3 border border-white/5 rounded-xl text-[9px] font-bold uppercase bg-white/5">+20%</button>
+                        <button onclick="window.setComp(this, 45)" class="comp-btn p-3 border border-white/5 rounded-xl text-[9px] font-bold uppercase bg-white/5">+45%</button>
+                    </div>
                 </div>
                 <div class="pt-6 border-t border-white/5 flex justify-between items-end">
                     <div>
-                        <p class="text-[10px] font-bold text-gray-500 uppercase">Presupuesto</p>
+                        <p class="text-[10px] font-bold text-gray-500 uppercase">Estimado</p>
                         <p class="text-5xl font-black text-red-500" id="calc-res">40€</p>
                     </div>
-                    <p class="text-[9px] text-gray-600 mb-2 uppercase italic">Mínimo 40€</p>
+                    <p class="text-[9px] text-gray-600 mb-2 uppercase italic">Min. 40€</p>
                 </div>
             </div>
         </section>
 
         <!-- STOCK -->
         <section id="view-stock" class="view">
-            <h3 class="text-lg font-black mb-5 italic uppercase">Stock</h3>
+            <h3 class="text-lg font-black mb-5 italic uppercase text-red-500">Materiales</h3>
             <div class="luxury-card overflow-hidden">
                 <table class="w-full text-left text-xs">
                     <thead>
                         <tr class="bg-white/5 text-[8px] font-bold text-gray-600 uppercase">
                             <th class="p-5">Nombre</th>
                             <th class="p-5 text-center">Cant.</th>
-                            <th class="p-5 text-right">Sumar</th>
+                            <th class="p-5 text-right">Acción</th>
                         </tr>
                     </thead>
                     <tbody id="stock-list"></tbody>
@@ -192,36 +199,37 @@
             </div>
         </section>
 
-        <!-- FIRMAS -->
+        <!-- FIRMAS (ADMIN) -->
         <section id="view-signatures" class="view">
             <div class="flex justify-between items-center mb-5">
-                <h3 class="text-lg font-black italic uppercase text-red-500">Firmas</h3>
-                <button onclick="window.abrirModeloLegal()" class="text-[9px] text-gray-400 font-bold border border-white/10 px-4 py-2 rounded-full uppercase">Contrato Legal</button>
+                <h3 class="text-lg font-black italic uppercase text-red-500">Documentos</h3>
+                <button onclick="window.verModeloLegal()" class="text-[9px] text-gray-400 font-bold border border-white/10 px-4 py-2 rounded-full uppercase">Contrato Legal</button>
             </div>
             <div id="firmas-list" class="space-y-4"></div>
         </section>
 
-        <!-- MODO CLIENTE: FIRMA -->
+        <!-- MODO CLIENTE: FIRMA LEGAL -->
         <section id="view-consent" class="view">
-            <div class="text-center mb-8">
-                <div class="w-14 h-14 text-red-500 mx-auto mb-3">
+            <div class="text-center mb-8 pt-4">
+                <div class="w-16 h-16 text-red-500 mx-auto mb-3">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 9h6l-5 4 2 8-6-5-6 5 2-8-5-4h6l3-9z"/></svg>
                 </div>
                 <h2 class="text-2xl font-black italic text-red-500 uppercase tracking-widest">eidentattoo</h2>
-                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.2em]">Consentimiento Sanitario Oficial</p>
+                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.2em]">Consentimiento Informado Sanitario</p>
             </div>
 
             <div class="luxury-card p-6 space-y-5">
-                <div id="legal-text-content" class="legal-box">
-                    <!-- Texto oficial España inyectado -->
+                <div id="legal-text-main" class="legal-box">
+                    <!-- Texto oficial España inyectado aquí -->
                 </div>
 
                 <div class="space-y-3">
-                    <input type="text" id="c-name" placeholder="Nombre y Apellidos del Cliente">
+                    <input type="text" id="c-name" placeholder="Nombre y Apellidos">
                     <input type="text" id="c-dni" placeholder="DNI / NIE / Pasaporte">
                 </div>
 
                 <div class="relative">
+                    <p class="text-[9px] font-bold text-gray-500 uppercase mb-2">Firma Digital del Cliente:</p>
                     <canvas id="sig-canvas"></canvas>
                     <button onclick="window.limpiarFirma()" class="absolute bottom-2 right-2 text-[8px] text-gray-500 font-bold border border-white/10 px-3 py-2 rounded-lg bg-black/80 uppercase">Borrar</button>
                 </div>
@@ -232,51 +240,52 @@
 
     </main>
 
-    <!-- Navegación -->
-    <nav id="nav-bar" class="fixed bottom-0 left-0 right-0 flex justify-around items-center p-4 z-[5000] bg-black/95 backdrop-blur-xl border-t border-white/5">
+    <!-- Barra de Navegación -->
+    <nav id="nav-bar" class="fixed bottom-0 left-0 right-0 flex justify-around items-center p-4 z-[5000] bg-black/95 backdrop-blur-xl border-t border-white/5 safe-area-bottom">
         <button onclick="window.irA('dashboard')" class="nav-item active" data-view="dashboard">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <svg class="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
             <span class="text-[7px] font-black uppercase">Panel</span>
         </button>
         <button onclick="window.irA('agenda')" class="nav-item" data-view="agenda">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <svg class="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             <span class="text-[7px] font-black uppercase">Citas</span>
         </button>
         <button onclick="window.irA('calc')" class="nav-item" data-view="calc">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            <svg class="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
             <span class="text-[7px] font-black uppercase">Precio</span>
         </button>
         <button onclick="window.irA('stock')" class="nav-item" data-view="stock">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            <svg class="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
             <span class="text-[7px] font-black uppercase">Stock</span>
         </button>
         <button onclick="window.irA('signatures')" class="nav-item" data-view="signatures">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <svg class="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             <span class="text-[7px] font-black uppercase">Firmas</span>
         </button>
     </nav>
 
-    <!-- Modales -->
+    <!-- Modal Modelo Legal (Aída) -->
     <div id="modal-legal" class="fixed inset-0 bg-black/98 z-[10000] hidden flex items-center justify-center p-6">
         <div class="luxury-card p-8 w-full max-w-md border-red-500/30">
-            <h2 class="text-sm font-black text-red-500 mb-5 uppercase italic tracking-widest text-center">Contrato Legal</h2>
+            <h2 class="text-sm font-black text-red-500 mb-5 uppercase italic text-center">Modelo Consentimiento España</h2>
             <div id="legal-text-modal" class="legal-box h-80 mb-8"></div>
-            <button onclick="window.abrirModeloLegal()" class="w-full py-4 btn-primary font-black uppercase tracking-widest">CERRAR</button>
+            <button onclick="window.verModeloLegal()" class="w-full py-4 btn-primary font-black uppercase tracking-widest">CERRAR MODELO</button>
         </div>
     </div>
 
+    <!-- Modal Nueva Cita -->
     <div id="modal-cita" class="fixed inset-0 bg-black/98 z-[11000] hidden flex items-center justify-center p-6">
         <div class="luxury-card p-7 w-full max-w-sm border-white/10">
-            <h2 class="text-sm font-black text-red-500 mb-5 uppercase italic text-center">Nueva Cita</h2>
+            <h2 class="text-sm font-black text-red-500 mb-5 uppercase italic text-center">Agendar Sesión</h2>
             <div class="space-y-4">
                 <input type="text" id="n-client" placeholder="Nombre">
-                <input type="tel" id="n-tel" placeholder="WhatsApp">
+                <input type="tel" id="n-tel" placeholder="WhatsApp (ej: 600000000)">
                 <div class="grid grid-cols-2 gap-3">
                     <input type="date" id="n-date">
                     <input type="time" id="n-time">
                 </div>
                 <div class="flex gap-3 pt-2">
-                    <button onclick="window.abrirModalCita()" class="flex-1 py-4 bg-white/5 rounded-xl text-[10px] font-bold uppercase">Cerrar</button>
+                    <button onclick="window.abrirCita()" class="flex-1 py-4 bg-white/5 rounded-xl text-[10px] font-bold uppercase">Cerrar</button>
                     <button onclick="window.guardarCita()" class="flex-1 py-4 btn-primary rounded-xl text-[10px] font-bold uppercase">Guardar</button>
                 </div>
             </div>
@@ -291,28 +300,29 @@
         import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
         import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, doc, updateDoc, deleteDoc } from "firebase/firestore";
 
-        const fb = JSON.parse(__firebase_config);
-        const app = initializeApp(fb);
+        const config = JSON.parse(__firebase_config);
+        const app = initializeApp(config);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'eiden-tattoo-vfinal-official';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'eiden-tattoo-vfinal-real';
 
-        const TEXT_LEGAL = `
-            <p class="font-bold text-red-500 mb-2 underline uppercase">1. CONSENTIMIENTO SANITARIO ESPAÑA</p>
-            <p>Yo, el cliente, autorizo a <strong>Aída Gómez (eidentattoo)</strong> a realizar el procedimiento de tatuaje decorativo. Entiendo que es una técnica irreversible que introduce pigmentos en la dermis.</p>
-            <p class="font-bold text-white mt-4 mb-2 uppercase">2. RIESGOS INHERENTES</p>
-            <p>Acepto riesgos de infecciones locales, reacciones alérgicas a pigmentos, queloides o cicatrices defectuosas. El estudio garantiza material estéril de un solo uso.</p>
-            <p class="font-bold text-red-500 mt-4 mb-2 underline uppercase italic">3. DECLARACIÓN JURADA MÉDICA</p>
-            <p><strong>CONFIRMO NO PADECER:</strong> VIH, Hepatitis B/C, sífilis, epilepsia, cardiopatías graves, enfermedades de la piel en la zona o alergias graves a metales o tintas. No estoy bajo efectos de sustancias.</p>
-            <p class="font-bold text-white mt-4 mb-2 uppercase">4. PROTECCIÓN DE DATOS (RGPD)</p>
-            <p>Sus datos personales y sanitarios serán tratados por Aída Gómez para la gestión del procedimiento. No se cederán a terceros salvo obligación legal conforme al RGPD.</p>
-            <p class="font-bold text-white mt-4 mb-2 uppercase">5. PRECIO</p>
-            <p>El <strong>mínimo de sesión es de 40€</strong>.</p>
+        const LEGAL_TEXT = `
+            <p class="font-bold text-red-500 mb-2 underline uppercase">1. CONSENTIMIENTO INFORMADO (SANIDAD ESPAÑA)</p>
+            <p>Yo, el cliente, autorizo libremente a <strong>Aída Gómez (eidentattoo)</strong> a realizar el procedimiento de tatuaje. Entiendo que se trata de una técnica irreversible mediante la introducción de pigmentos en la dermis.</p>
+            <p class="font-bold text-white mt-4 mb-2 uppercase tracking-widest">2. RIESGOS Y COMPLICACIONES</p>
+            <p>He sido informado de los riesgos: infecciones locales, reacciones alérgicas a pigmentos, queloides o cicatrización defectuosa. El estudio garantiza material estéril de un solo uso homologado por las autoridades sanitarias españolas.</p>
+            <p class="font-bold text-red-500 mt-4 mb-2 underline uppercase italic">3. DECLARACIÓN JURADA DE SALUD</p>
+            <p><strong>CONFIRMO BAJO MI RESPONSABILIDAD NO PADECER:</strong> VIH, Hepatitis B o C, sífilis, diabetes no controlada, epilepsia, cardiopatías graves, enfermedades de la piel en la zona a tatuar (psoriasis, eccemas) o alergias graves a metales o pigmentos. Declaro no estar bajo la influencia de alcohol o drogas.</p>
+            <p class="font-bold text-white mt-4 mb-2 uppercase tracking-widest">4. PROTECCIÓN DE DATOS (RGPD)</p>
+            <p>Sus datos personales y sanitarios serán tratados por Aída Gómez únicamente para la gestión del historial sanitario. Según el RGPD, puede ejercer sus derechos de acceso y rectificación. No se cederán datos a terceros salvo obligación legal.</p>
+            <p class="font-bold text-white mt-4 mb-2 uppercase tracking-widest">5. PRECIO</p>
+            <p>Acepto que el <strong>mínimo de sesión es de 40€</strong>.</p>
         `;
 
         let selMulti = [];
+        let curComp = 0;
 
-        // ASIGNACIÓN GLOBAL DE FUNCIONES
+        // ASIGNACIÓN GLOBAL DEFINITIVA
         window.irA = (v) => {
             if(document.body.classList.contains('client-mode')) return;
             document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
@@ -328,14 +338,20 @@
             window.recalc();
         };
 
+        window.setComp = (btn, val) => {
+            document.querySelectorAll('.comp-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            curComp = val / 100;
+            window.recalc();
+        };
+
         window.recalc = () => {
             const cm = parseFloat(document.getElementById('calc-cm').value) || 0;
-            const extra = parseFloat(document.getElementById('calc-extra').value) || 0;
             if(selMulti.length === 0) { document.getElementById('calc-res').innerText = "40€"; return; }
             const maxM = Math.max(...selMulti);
             const rate = maxM === 1.0 ? 3.0 : 4.5;
             const mixBonus = (selMulti.length - 1) * 0.15;
-            let total = (40 + (cm * rate)) * maxM * (1 + mixBonus) * (1 + (extra/100));
+            let total = (40 + (cm * rate)) * maxM * (1 + mixBonus) * (1 + curComp);
             document.getElementById('calc-res').innerText = Math.max(40, Math.round(total)) + '€';
         };
 
@@ -352,46 +368,41 @@
             canvas.width = canvas.offsetWidth;
             canvas.height = 260;
             ctx.lineWidth = 3; ctx.strokeStyle = "#000"; ctx.lineCap = "round";
+            let drawing = false;
             const getP = (e) => {
                 const r = canvas.getBoundingClientRect();
                 const t = e.touches ? e.touches[0] : e;
                 return { x: t.clientX - r.left, y: t.clientY - r.top };
             };
-            canvas.onmousedown = (e) => { this.drawing = true; ctx.beginPath(); const p = getP(e); ctx.moveTo(p.x, p.y); };
-            canvas.onmousemove = (e) => { if(this.drawing) { const p = getP(e); ctx.lineTo(p.x, p.y); ctx.stroke(); } };
-            window.onmouseup = () => this.drawing = false;
-            canvas.ontouchstart = (e) => { this.drawing = true; ctx.beginPath(); const p = getP(e); ctx.moveTo(p.x, p.y); };
-            canvas.ontouchmove = (e) => { if(this.drawing) { e.preventDefault(); const p = getP(e); ctx.lineTo(p.x, p.y); ctx.stroke(); } };
-            canvas.ontouchend = () => this.drawing = false;
-        };
-
-        window.limpiarFirma = () => {
-            const canvas = document.getElementById('sig-canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0,0,canvas.width,canvas.height);
+            canvas.onmousedown = (e) => { drawing = true; ctx.beginPath(); const p = getP(e); ctx.moveTo(p.x, p.y); };
+            canvas.onmousemove = (e) => { if(drawing) { const p = getP(e); ctx.lineTo(p.x, p.y); ctx.stroke(); } };
+            window.onmouseup = () => drawing = false;
+            canvas.ontouchstart = (e) => { drawing = true; ctx.beginPath(); const p = getP(e); ctx.moveTo(p.x, p.y); };
+            canvas.ontouchmove = (e) => { if(drawing) { e.preventDefault(); const p = getP(e); ctx.lineTo(p.x, p.y); ctx.stroke(); } };
+            canvas.ontouchend = () => drawing = false;
+            window.limpiarFirma = () => ctx.clearRect(0,0,canvas.width,canvas.height);
         };
 
         window.saveSig = async () => {
             const n = document.getElementById('c-name').value;
             const d = document.getElementById('c-dni').value;
-            if(!n || !d) return alert("Completa los campos obligatorios.");
+            if(!n || !d) return alert("Completa los campos.");
             const canvas = document.getElementById('sig-canvas');
             try {
                 await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'consentimientos'), {
                     cliente: n, dni: d, firma: canvas.toDataURL(), timestamp: serverTimestamp()
                 });
-                document.getElementById('view-consent').innerHTML = `<div class="p-12 text-center"><div class="text-7xl mb-6">✅</div><h2 class="text-2xl font-black text-red-500 uppercase">Documento Firmado</h2><p class="text-sm text-gray-500 mt-4">Proceso legal finalizado con éxito.</p></div>`;
-            } catch(e) { alert("Error al guardar"); }
+                document.getElementById('view-consent').innerHTML = `<div class="p-12 text-center"><div class="text-7xl mb-6">✅</div><h2 class="text-2xl font-black text-red-500 uppercase tracking-tighter">Documento Firmado</h2><p class="text-sm text-gray-500 mt-4">Proceso legal finalizado. Devuelve el dispositivo a Aída.</p></div>`;
+            } catch(e) { alert("Error"); }
         };
 
-        window.compartirApp = () => {
+        window.compartirURL = () => {
             const url = window.location.origin + window.location.pathname + '?mode=client';
-            navigator.clipboard.writeText(url);
-            alert("Enlace copiado al portapapeles");
+            navigator.clipboard.writeText(url); alert("Copiado");
         };
 
-        window.abrirModalCita = () => document.getElementById('modal-cita').classList.toggle('hidden');
-        window.abrirModeloLegal = () => document.getElementById('modal-legal').classList.toggle('hidden');
+        window.abrirCita = () => document.getElementById('modal-cita').classList.toggle('hidden');
+        window.verModeloLegal = () => document.getElementById('modal-legal').classList.toggle('hidden');
 
         window.guardarCita = async () => {
             const n = document.getElementById('n-client').value;
@@ -400,62 +411,52 @@
             const h = document.getElementById('n-time').value;
             if(!n || !t || !d) return alert("Faltan datos.");
             await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'agenda'), { nombre: n, tel: t, fecha: d, hora: h });
-            window.abrirModalCita();
+            window.abrirCita();
         };
 
-        window.borrarCita = async (id) => { if(confirm("¿Eliminar cita?")) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agenda', id)); };
+        window.borrarCita = async (id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agenda', id)); };
         window.upSt = async (id, v) => await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', id), { cantidad: v });
 
-        // SYNC REALTIME
         async function startSync() {
-            document.getElementById('legal-text-content').innerHTML = TEXT_LEGAL;
-            document.getElementById('legal-text-modal').innerHTML = TEXT_LEGAL;
-
+            document.getElementById('legal-text-main').innerHTML = LEGAL_TEXT;
+            document.getElementById('legal-text-modal').innerHTML = LEGAL_TEXT;
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'agenda'), (snap) => {
                 const list = document.getElementById('agenda-list'); list.innerHTML = '';
                 snap.forEach(d => {
                     const c = d.data();
-                    const wa = `https://wa.me/${c.tel.replace(/\s/g, '')}?text=${encodeURIComponent("Hola "+c.nombre+", soy Aída de eidentattoo. Confirmo nuestra cita hoy.")}`;
-                    list.innerHTML += `<div class="luxury-card p-5 flex justify-between items-center border-l-4 border-red-500"><div><h4 class="font-bold text-sm uppercase italic">${c.nombre}</h4><p class="text-[9px] text-gray-600">${c.fecha} • ${c.hora}</p></div><div class="flex gap-2"><a href="${wa}" target="_blank" class="w-10 h-10 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.93.55 3.72 1.5 5.25L2 22l4.75-1.5c1.53.95 3.32 1.5 5.25 1.5 5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg></a><button onclick="window.borrarCita('${d.id}')" class="w-10 h-10 bg-white/5 text-gray-500 rounded-full flex items-center justify-center"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></div></div>`;
+                    const wa = `https://wa.me/${c.tel.replace(/\s/g, '')}?text=${encodeURIComponent("Hola "+c.nombre+", soy Aída de eidentattoo. Confirmo nuestra cita el día "+c.fecha+" a las "+c.hora+". ¿Confirmas asistencia?")}`;
+                    list.innerHTML += `<div class="luxury-card p-5 flex justify-between items-center border-l-4 border-red-500"><div><h4 class="font-bold text-sm uppercase italic tracking-tight">${c.nombre}</h4><p class="text-[9px] text-gray-500">${c.fecha} • ${c.hora}</p></div><div class="flex gap-2"><a href="${wa}" target="_blank" class="w-10 h-10 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.93.55 3.72 1.5 5.25L2 22l4.75-1.5c1.53.95 3.32 1.5 5.25 1.5 5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg></a><button onclick="window.borrarCita('${d.id}')" class="w-10 h-10 bg-white/5 text-gray-500 rounded-full flex items-center justify-center"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></div></div>`;
                 });
                 document.getElementById('stat-citas').innerText = snap.size;
             });
-
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'stock'), (snap) => {
                 const list = document.getElementById('stock-list'); list.innerHTML = '';
                 snap.forEach(d => {
                     const s = d.data();
-                    list.innerHTML += `<tr class="border-t border-white/5"><td class="p-5 font-bold text-gray-400 text-[9px] uppercase tracking-widest">${s.nombre}</td><td class="p-5 text-center font-black ${s.cantidad < 5 ? 'text-red-500' : 'text-white'}">${s.cantidad}</td><td class="p-5 text-right"><button onclick="window.upSt('${d.id}', ${s.cantidad+1})" class="px-5 py-2 bg-red-500/10 rounded-full border border-red-500/20 text-red-500 font-bold active:scale-90 shadow-lg shadow-red-500/5">+</button></td></tr>`;
+                    list.innerHTML += `<tr class="border-t border-white/5"><td class="p-5 font-bold text-gray-400 text-[9px] uppercase tracking-widest">${s.nombre}</td><td class="p-5 text-center font-black ${s.cantidad < 5 ? 'text-red-500' : 'text-white'} text-base">${s.cantidad}</td><td class="p-5 text-right"><button onclick="window.upSt('${d.id}', ${s.cantidad+1})" class="px-5 py-2 bg-red-500/10 rounded-full border border-red-500/20 text-red-500 font-black active:scale-90">+</button></td></tr>`;
                 });
             });
-
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'consentimientos'), (snap) => {
+                document.getElementById('stat-firmas').innerText = snap.size;
                 const list = document.getElementById('firmas-list'); list.innerHTML = '';
                 snap.forEach(d => {
                     const f = d.data();
-                    list.innerHTML += `<div class="luxury-card p-5"><div class="flex justify-between items-start mb-3"><div><p class="font-bold text-xs uppercase italic">${f.cliente}</p><p class="text-[8px] text-gray-500">DNI: ${f.dni}</p></div></div><img src="${f.firma}" class="w-full bg-white rounded-lg h-28 object-contain invert border border-white/5"></div>`;
+                    list.innerHTML += `<div class="luxury-card p-5"><div class="flex justify-between items-start mb-3"><div><p class="font-bold text-xs uppercase italic">${f.cliente}</p><p class="text-[8px] text-gray-500 font-black">DNI: ${f.dni}</p></div></div><img src="${f.firma}" class="w-full bg-white rounded-lg h-28 object-contain invert border border-white/5"></div>`;
                 });
-                document.getElementById('stat-firmas').innerText = snap.size;
             });
         }
 
-        // INIT
-        const init = async () => {
-            const isCl = new URLSearchParams(window.location.search).get('mode') === 'client';
-            if(isCl) { 
-                document.body.classList.add('client-mode'); 
-                setTimeout(window.initCanvas, 300); 
-            }
-            try {
-                await signInAnonymously(auth);
-                onAuthStateChanged(auth, (u) => { if(u) { startSync(); if(!isCl) window.initQR(); } });
-            } catch(e) {}
-        };
-        init();
+        const isCl = new URLSearchParams(window.location.search).get('mode') === 'client';
+        if(isCl) { 
+            document.body.classList.add('client-mode'); 
+            setTimeout(window.initCanvas, 500); 
+        }
 
-        // Listeners UI
+        signInAnonymously(auth).then(() => {
+            onAuthStateChanged(auth, (u) => { if(u) { startSync(); if(!isCl) window.initQR(); } });
+        });
+
         document.getElementById('calc-cm').addEventListener('input', window.recalc);
-        document.getElementById('calc-extra').addEventListener('input', window.recalc);
     </script>
 </body>
 </html>
