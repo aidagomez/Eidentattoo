@@ -5,15 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>eidentattoo | Aída Gómez</title>
     
-    <!-- Evitar caché -->
-    <meta http-equiv="cache-control" content="no-cache, must-revalidate, post-check=0, pre-check=0">
-    <meta http-equiv="expires" content="0">
-    <meta http-equiv="pragma" content="no-cache">
+    <!-- ICONO AUTOMÁTICO (No tienes que hacer nada) -->
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/105/105231.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/105/105231.png">
+    
+    <!-- CONFIGURACIÓN APP (Para que se vea a pantalla completa como Instagram) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDKs -->
+    <!-- Firebase Clásico -->
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app-classic.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth-classic.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore-classic.js"></script>
@@ -32,30 +36,21 @@
         .style-pill { transition: 0.2s; cursor: pointer; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); font-size: 0.65rem; text-transform: uppercase; font-weight: 800; border-radius: 12px; padding: 12px; text-align: center; }
         .style-pill.active { background: var(--accent); color: white; border-color: var(--accent); }
         #signature-canvas { background: #fff; border-radius: 20px; touch-action: none; border: 3px solid #111; width: 100%; height: 250px; }
-        .legal-box { background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 1rem; font-size: 0.7rem; color: #888; max-height: 140px; overflow-y: auto; }
         main { padding-bottom: 140px; }
-        .btn-luxury { background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%); border-radius: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; transition: 0.2s; }
-        .btn-luxury:active { transform: scale(0.96); }
+        .btn-luxury { background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%); border-radius: 16px; font-weight: 800; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-    <!-- Limpiador de rastro anterior -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
-        }
-    </script>
-
-    <!-- NAVEGACIÓN GLOBAL -->
+    <!-- NAVEGACIÓN -->
     <nav id="main-nav" class="fixed bottom-0 left-0 w-full z-50 flex items-center justify-around">
         <button onclick="window.irA('dashboard')" class="nav-btn" id="nav-dashboard">
             <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            <span class="text-[8px] font-bold uppercase">Aída</span>
+            <span class="text-[8px] font-bold uppercase">Inicio</span>
         </button>
         <button onclick="window.irA('agenda')" class="nav-btn" id="nav-agenda">
             <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span class="text-[8px] font-bold uppercase">Agenda</span>
+            <span class="text-[8px] font-bold uppercase">Citas</span>
         </button>
         <button onclick="window.irA('calculadora')" class="nav-btn" id="nav-calculadora">
             <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11v6"/><path d="M9 14h6"/></svg>
@@ -89,43 +84,34 @@
             </div>
 
             <div onclick="window.generarQR()" class="glass-card p-6 rounded-[2rem] bg-accent-red/10 border-red-500/20 text-center cursor-pointer mb-6 active:scale-95">
-                <p class="text-red-500 text-[10px] font-black uppercase mb-1">Modo Consentimiento</p>
-                <h3 class="text-xl font-black italic">GENERAR QR CLIENTE</h3>
+                <p class="text-red-500 text-[10px] font-black uppercase mb-1 tracking-widest">Aída Gómez</p>
+                <h3 class="text-xl font-black italic">LINK FIRMA CLIENTE</h3>
             </div>
 
             <div class="glass-card p-6 rounded-[2rem]">
-                <h4 class="text-[10px] font-black italic mb-4 uppercase text-white/40 tracking-widest underline decoration-red-500">Sesiones de hoy:</h4>
+                <h4 class="text-[10px] font-black italic mb-4 uppercase text-white/40 tracking-widest">Hoy:</h4>
                 <div id="dash-today-list" class="space-y-3"></div>
             </div>
         </section>
 
         <!-- CALCULADORA 40€ -->
         <section id="view-calculadora" class="view-section">
-            <h1 class="text-3xl font-black italic uppercase mb-6">Calculadora <span class="accent-red">Pro.</span></h1>
-            <div class="space-y-6">
-                <div class="glass-card p-6 rounded-[2.5rem] space-y-6">
-                    <div class="grid grid-cols-2 gap-2" id="style-selector">
-                        <div onclick="window.toggleStyle('lineal', 1.0, 'Lineal')" class="style-pill" id="pill-lineal">Lineal</div>
-                        <div onclick="window.toggleStyle('anime_bg', 1.5, 'Anime B&G')" class="style-pill" id="pill-anime_bg">Anime B&G</div>
-                        <div onclick="window.toggleStyle('anime_color', 1.9, 'Anime Col')" class="style-pill" id="pill-anime_color">Anime Col</div>
-                        <div onclick="window.toggleStyle('japones', 2.1, 'Japonés')" class="style-pill" id="pill-japones">Japonés</div>
-                        <div onclick="window.toggleStyle('realismo', 2.4, 'Realismo')" class="style-pill col-span-2" id="pill-realismo">Realismo Ilustrado</div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
-                        <div>
-                            <label class="text-[9px] uppercase text-red-500 font-black mb-1 block">Tamaño (cm)</label>
-                            <input type="number" id="calc-cm" value="5" class="input-dark" oninput="window.calcularPrecio()">
-                        </div>
-                        <div>
-                            <label class="text-[9px] uppercase text-white/30 font-black mb-1 block">Extra %</label>
-                            <input type="number" id="calc-extra" value="0" class="input-dark" oninput="window.calcularPrecio()">
-                        </div>
-                    </div>
+            <h1 class="text-3xl font-black italic uppercase mb-6 text-center">Calculadora <span class="accent-red">Pro.</span></h1>
+            <div class="glass-card p-6 rounded-[2.5rem] space-y-6">
+                <div class="grid grid-cols-2 gap-2" id="style-selector">
+                    <div onclick="window.toggleStyle('lineal', 1.0, 'Lineal')" class="style-pill" id="pill-lineal">Lineal</div>
+                    <div onclick="window.toggleStyle('anime_bg', 1.5, 'Anime B&G')" class="style-pill" id="pill-anime_bg">Anime B&G</div>
+                    <div onclick="window.toggleStyle('anime_color', 1.9, 'Anime Col')" class="style-pill" id="pill-anime_color">Anime Col</div>
+                    <div onclick="window.toggleStyle('japones', 2.1, 'Japonés')" class="style-pill" id="pill-japones">Japonés</div>
+                    <div onclick="window.toggleStyle('realismo', 2.4, 'Realismo')" class="style-pill col-span-2" id="pill-realismo">Realismo Ilustrado</div>
                 </div>
-                <div class="glass-card p-8 rounded-[2.5rem] flex flex-col items-center justify-center text-center bg-gradient-to-br from-[#151515] to-black">
-                    <p class="text-[10px] uppercase font-black text-white/20 mb-1 tracking-[0.3em]">Total Estimado</p>
-                    <h2 id="calc-total" class="text-7xl font-black italic tracking-tighter text-white">40€</h2>
-                    <p id="calc-summary" class="text-red-500 mt-4 text-[10px] uppercase font-bold italic">Mínimo de sesión</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="number" id="calc-cm" value="5" class="input-dark text-center" oninput="window.calcularPrecio()" placeholder="cm">
+                    <input type="number" id="calc-extra" value="0" class="input-dark text-center" oninput="window.calcularPrecio()" placeholder="+%">
+                </div>
+                <div class="text-center py-4 bg-black/40 rounded-3xl">
+                    <p class="text-[10px] uppercase font-black text-white/20 mb-1">Presupuesto</p>
+                    <h2 id="calc-total" class="text-6xl font-black italic tracking-tighter text-white">40€</h2>
                 </div>
             </div>
         </section>
@@ -133,7 +119,7 @@
         <!-- AGENDA -->
         <section id="view-agenda" class="view-section">
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-black italic uppercase">Agenda</h1>
+                <h1 class="text-3xl font-black italic uppercase text-white">Agenda</h1>
                 <button onclick="window.abrirModalCita()" class="btn-luxury px-6 py-3 text-[10px]">+ Nueva</button>
             </div>
             <div id="calendar-grid" class="grid grid-cols-7 gap-1 glass-card p-4 rounded-[2rem] text-center"></div>
@@ -143,13 +129,13 @@
         <!-- STOCK -->
         <section id="view-stock" class="view-section">
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-black italic uppercase">Material</h1>
-                <button onclick="window.abrirModalStock()" class="btn-luxury px-6 py-3 text-[10px]">+ Insumo</button>
+                <h1 class="text-3xl font-black italic uppercase text-white">Stock</h1>
+                <button onclick="window.abrirModalStock()" class="btn-luxury px-6 py-3 text-[10px]">+ Item</button>
             </div>
             <div class="glass-card rounded-3xl overflow-hidden">
                 <table class="w-full text-left">
                     <thead class="bg-white/5 text-[9px] uppercase font-black text-white/30 tracking-widest">
-                        <tr><th class="p-4">Item</th><th class="p-4">Stock</th><th class="p-4"></th></tr>
+                        <tr><th class="p-4">Item</th><th class="p-4">Cant.</th><th class="p-4"></th></tr>
                     </thead>
                     <tbody id="stock-list" class="divide-y divide-white/5"></tbody>
                 </table>
@@ -160,37 +146,21 @@
         <section id="view-firma" class="view-section">
             <div class="max-w-3xl mx-auto space-y-6">
                 <header class="text-center">
-                    <h2 class="text-2xl font-black italic uppercase">Consentimiento</h2>
-                    <p class="accent-red font-black tracking-[0.4em] uppercase text-[9px] italic mt-1">eidentattoo by Aída</p>
+                    <h2 class="text-2xl font-black italic uppercase tracking-tighter">Consentimiento</h2>
+                    <p class="accent-red font-black tracking-[0.4em] uppercase text-[9px] italic mt-1">eidentattoo studio</p>
                 </header>
 
                 <div class="glass-card p-6 rounded-[2.5rem] space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 border-b border-white/5 pb-6">
-                        <div>
-                            <p class="text-[9px] font-black uppercase text-white/30 mb-2">Estudio / Aída Gómez</p>
-                            <div class="text-[10px] text-white/50 space-y-1">
-                                <p class="text-white font-bold uppercase">eidentattoo</p>
-                                <p>CIF: 00000000X | RS: 000-XX</p>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <input type="text" id="sign-name" placeholder="Nombre Cliente" class="input-dark">
+                        <input type="text" id="sign-name" placeholder="Nombre del Cliente" class="input-dark">
                         <input type="text" id="sign-dni" placeholder="DNI / NIE" class="input-dark">
                     </div>
-
-                    <div class="legal-box italic">
-                        Declaro ser mayor de edad y no padecer enfermedades infectocontagiosas. He sido informado de los riesgos y cuidados necesarios. Tarifa mínima sesión: 40€. Mis datos se custodian bajo el RGPD por eidentattoo.
+                    <div class="legal-box italic text-justify">
+                        Autorizo a Aída Gómez (eidentattoo) a realizar el tatuaje. Confirmo ser mayor de edad, no estar bajo efectos de drogas/alcohol y no padecer enfermedades infectocontagiosas. Mínimo sesión: 40€. RGPD aplicado.
                     </div>
-
-                    <div class="relative">
-                        <p class="text-center text-[9px] font-black uppercase text-white/20 mb-2 tracking-widest">Firma en el cuadro blanco</p>
-                        <canvas id="signature-canvas"></canvas>
-                        <button onclick="window.limpiarFirma()" class="absolute bottom-2 right-2 text-black/30 text-[9px] font-black uppercase bg-black/5 px-2 py-1 rounded-lg">Borrar</button>
-                    </div>
-
-                    <button id="btn-save-signature" onclick="window.guardarConsentimiento()" class="w-full btn-luxury py-5 text-lg">Guardar Firma</button>
+                    <canvas id="signature-canvas"></canvas>
+                    <button id="btn-save-signature" onclick="window.guardarConsentimiento()" class="w-full btn-luxury py-5 text-lg shadow-2xl shadow-red-600/20">CONFIRMAR Y GUARDAR</button>
+                    <button onclick="window.limpiarFirma()" class="w-full text-[9px] text-white/20 font-black uppercase tracking-widest">Limpiar Lienzo</button>
                 </div>
             </div>
         </section>
@@ -205,9 +175,7 @@
         </div>
     </div>
 
-    <!-- Scripts con carga asegurada -->
     <script>
-        // Lógica de navegación y funciones GLOBALES
         var selectedStyles = [];
         var appointments = [];
         var db, auth, studioId;
@@ -249,12 +217,6 @@
 
         window.cerrarModal = function() { document.getElementById('modal-overlay').classList.add('hidden'); };
 
-        window.confirmarWhatsapp = function(p, c, d, t) {
-            const msg = `Hola ${c}, soy Aída de eidentattoo. Confirmo nuestra cita el día ${d} a las ${t}. ¿Confirmas?`;
-            window.open(`https://wa.me/${p.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`, '_blank');
-        };
-
-        // --- FIREBASE INIT ---
         window.onload = function() {
             const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "" };
             firebase.initializeApp(firebaseConfig);
@@ -263,7 +225,34 @@
             studioId = typeof __app_id !== 'undefined' ? __app_id : 'eiden-tattoo-vfinal';
 
             auth.signInAnonymously().then(() => {
-                startDataSync();
+                db.collection('artifacts').doc(studioId).collection('public').doc('data').collection('appointments')
+                    .onSnapshot(s => {
+                        appointments = s.docs.map(d => ({ id: d.id, ...d.data() }));
+                        document.getElementById('stat-sessions').textContent = appointments.length;
+                        const today = new Date().toISOString().split('T')[0];
+                        const list = appointments.filter(a => a.date === today);
+                        document.getElementById('dash-today-list').innerHTML = list.map(a => `
+                            <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
+                                <div><p class="font-black text-xs uppercase italic text-white">${a.client}</p><p class="text-[8px] text-white/30 uppercase font-bold">${a.time}</p></div>
+                                <button onclick="window.open('https://wa.me/${a.phone.replace(/\\D/g, '')}', '_blank')" class="text-green-500 text-[10px] font-black uppercase">Confirmar</button>
+                            </div>
+                        `).join('') || '<p class="text-[9px] text-white/20 italic tracking-widest text-center">Agenda vacía hoy.</p>';
+                    });
+
+                db.collection('artifacts').doc(studioId).collection('public').doc('data').collection('consents')
+                    .onSnapshot(s => document.getElementById('stat-consents').textContent = s.size);
+
+                db.collection('artifacts').doc(studioId).collection('public').doc('data').collection('inventory')
+                    .onSnapshot(s => {
+                        const stock = s.docs.map(d => ({ id: d.id, ...d.data() }));
+                        document.getElementById('stock-list').innerHTML = stock.map(st => `
+                            <tr>
+                                <td class="p-4 uppercase italic font-black text-xs">${st.name}</td>
+                                <td class="p-4 font-bold text-[10px]">${st.quantity} PCS</td>
+                                <td class="p-4 text-right"><button onclick="db.collection('artifacts').doc(studioId).collection('public').doc('data').collection('inventory').doc('${st.id}').delete()" class="text-white/10">&times;</button></td>
+                            </tr>
+                        `).join('');
+                    });
             });
 
             if (new URLSearchParams(window.location.search).get('mode') === 'client') {
@@ -271,45 +260,6 @@
                 window.irA('firma');
             }
         };
-
-        function startDataSync() {
-            // Citas
-            db.collection('artifacts').doc(studioId).collection('public').doc('data').collection('appointments')
-                .onSnapshot(s => {
-                    appointments = s.docs.map(d => ({ id: d.id, ...d.data() }));
-                    document.getElementById('stat-sessions').textContent = appointments.length;
-                    renderDashboard();
-                    if (document.getElementById('view-agenda').classList.contains('active')) window.renderCalendar();
-                });
-
-            // Firmas
-            db.collection('artifacts').doc(studioId).collection('public').doc('data').collection('consents')
-                .onSnapshot(s => document.getElementById('stat-consents').textContent = s.size);
-
-            // Stock
-            db.collection('artifacts').doc(studioId).collection('public').doc('data').collection('inventory')
-                .onSnapshot(s => {
-                    const stock = s.docs.map(d => ({ id: d.id, ...d.data() }));
-                    document.getElementById('stock-list').innerHTML = stock.map(st => `
-                        <tr class="group">
-                            <td class="p-4 uppercase italic font-black text-xs">${st.name}</td>
-                            <td class="p-4"><span class="px-2 py-1 rounded-full text-[8px] font-black ${st.quantity < 5 ? 'bg-red-500/20 text-red-500' : 'bg-white/10'}">${st.quantity} PCS</span></td>
-                            <td class="p-4 text-right"><button onclick="window.borrarStock('${st.id}')" class="text-white/10 hover:text-red-500">&times;</button></td>
-                        </tr>
-                    `).join('');
-                });
-        }
-
-        function renderDashboard() {
-            const today = new Date().toISOString().split('T')[0];
-            const list = appointments.filter(a => a.date === today);
-            document.getElementById('dash-today-list').innerHTML = list.map(a => `
-                <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
-                    <div><p class="font-black text-xs uppercase italic text-white">${a.client}</p><p class="text-[8px] text-white/30 uppercase font-bold">${a.time}</p></div>
-                    <button onclick="window.confirmarWhatsapp('${a.phone}', '${a.client}', '${a.date}', '${a.time}')" class="text-green-500 text-[10px] font-black uppercase italic tracking-widest">WA</button>
-                </div>
-            `).join('') || '<p class="text-[9px] text-white/20 italic tracking-widest text-center">Aída, nada hoy.</p>';
-        }
 
         window.renderCalendar = function() {
             const grid = document.getElementById('calendar-grid');
@@ -325,20 +275,18 @@
 
         window.verCitas = function(date) {
             const list = appointments.filter(a => a.date === date);
-            document.getElementById('day-details').innerHTML = `<h4 class="text-[9px] font-black text-white/20 uppercase italic tracking-widest mb-3">${date}</h4>` + 
+            document.getElementById('day-details').innerHTML = `<h4 class="text-[9px] font-black text-white/20 uppercase tracking-widest mb-3">${date}</h4>` + 
                 (list.length ? list.map(a => `
-                    <div class="glass-card p-5 rounded-3xl flex justify-between items-center border-l-4 border-red-500">
+                    <div class="glass-card p-4 rounded-3xl flex justify-between items-center border-l-4 border-red-500">
                         <div><p class="font-black text-white text-sm uppercase italic">${a.client}</p><p class="text-[9px] text-white/30 font-bold">${a.time} • ${a.style}</p></div>
-                        <button onclick="window.confirmarWhatsapp('${a.phone}', '${a.client}', '${a.date}', '${a.time}')" class="bg-green-500 text-black px-3 py-1 rounded-full text-[9px] font-black">OK</button>
+                        <button onclick="window.open('https://wa.me/${a.phone.replace(/\\D/g, '')}', '_blank')" class="bg-green-500 text-black px-3 py-1 rounded-full text-[9px] font-black">WA</button>
                     </div>
-                `).join('') : '<p class="text-[9px] text-white/10 italic">Sin sesiones.</p>');
+                `).join('') : '<p class="text-[9px] text-white/10 italic">Día libre.</p>');
         };
 
-        // --- CANVAS ---
         var canvas, ctx, drawing = false;
         window.initCanvas = function() {
             canvas = document.getElementById('signature-canvas');
-            if (!canvas) return;
             const rect = canvas.getBoundingClientRect();
             canvas.width = rect.width; canvas.height = 250;
             ctx = canvas.getContext('2d');
@@ -359,13 +307,11 @@
 
         window.guardarConsentimiento = function() {
             const n = document.getElementById('sign-name').value, d = document.getElementById('sign-dni').value;
-            if(!n || !d) return alert("Completa los datos del cliente.");
-            const data = { client: n, dni: d, signature: canvas.toDataURL(), timestamp: new Date().toISOString(), artist: "Aída" };
-            db.collection('artifacts').doc(studioId).collection('public').doc('data').collection('consents').add(data)
+            if(!n || !d) return alert("Faltan datos del cliente.");
+            db.collection('artifacts').doc(studioId).collection('public').doc('data').collection('consents').add({ client: n, dni: d, signature: canvas.toDataURL(), timestamp: new Date().toISOString(), artist: "Aída" })
                 .then(() => { alert("¡Guardado!"); location.reload(); });
         };
 
-        // --- MODALES ---
         window.abrirModalCita = function() {
             document.getElementById('modal-content').innerHTML = `
                 <h3 class="text-xl font-black mb-6 uppercase italic text-white">Agendar</h3>
@@ -373,7 +319,7 @@
                     <input type="text" id="m-client" placeholder="Cliente" class="input-dark p-4 text-xs font-bold">
                     <input type="tel" id="m-phone" placeholder="WhatsApp" class="input-dark p-4 text-xs font-bold">
                     <div class="grid grid-cols-2 gap-3"><input type="date" id="m-date" class="input-dark text-[10px]"><input type="time" id="m-time" class="input-dark text-[10px]"></div>
-                    <input type="text" id="m-style" placeholder="Técnica" class="input-dark p-4 text-xs font-bold">
+                    <input type="text" id="m-style" placeholder="Estilo" class="input-dark p-4 text-xs font-bold">
                     <button onclick="window.saveCita()" class="w-full btn-luxury py-5 rounded-2xl font-black text-sm">Añadir</button>
                 </div>`;
             document.getElementById('modal-overlay').classList.remove('hidden');
@@ -382,14 +328,13 @@
         window.saveCita = function() {
             const c = document.getElementById('m-client').value, p = document.getElementById('m-phone').value;
             if(!c || !p) return alert("Nombre y WhatsApp obligatorios.");
-            const data = { client: c, phone: p, date: document.getElementById('m-date').value, time: document.getElementById('m-time').value, style: document.getElementById('m-style').value };
-            db.collection('artifacts').doc(studioId).collection('public').doc('data').collection('appointments').add(data)
+            db.collection('artifacts').doc(studioId).collection('public').doc('data').collection('appointments').add({ client: c, phone: p, date: document.getElementById('m-date').value, time: document.getElementById('m-time').value, style: document.getElementById('m-style').value })
                 .then(() => window.cerrarModal());
         };
 
         window.abrirModalStock = function() {
             document.getElementById('modal-content').innerHTML = `
-                <h3 class="text-xl font-black mb-6 uppercase italic text-white">Stock</h3>
+                <h3 class="text-xl font-black mb-6 uppercase italic text-white tracking-widest">Material</h3>
                 <div class="space-y-4">
                     <input type="text" id="s-name" placeholder="Item" class="input-dark p-4 text-xs font-bold">
                     <input type="number" id="s-qty" placeholder="Cantidad" class="input-dark p-4 text-xs font-bold">
@@ -399,20 +344,19 @@
         };
 
         window.saveStock = function() {
-            const data = { name: document.getElementById('s-name').value, quantity: parseInt(document.getElementById('s-qty').value) };
-            db.collection('artifacts').doc(studioId).collection('public').doc('data').collection('inventory').add(data)
+            db.collection('artifacts').doc(studioId).collection('public').doc('data').collection('inventory').add({ name: document.getElementById('s-name').value, quantity: parseInt(document.getElementById('s-qty').value) })
                 .then(() => window.cerrarModal());
         };
 
-        window.borrarStock = function(id) { db.collection('artifacts').doc(studioId).collection('public').doc('data').collection('inventory').doc(id).delete(); };
-        
         window.generarQR = function() {
             const url = window.location.href.split('?')[0] + '?mode=client';
             const qr = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(url)}&color=000&bgcolor=fff`;
-            document.getElementById('modal-content').innerHTML = `<div class="text-center"><h3 class="text-xl font-black mb-6 uppercase text-white tracking-widest italic">Modo Firma</h3><div class="bg-white p-6 rounded-3xl inline-block shadow-2xl mb-6"><img src="${qr}" class="mx-auto w-48 h-48"></div><p class="text-white/30 text-[9px] uppercase font-bold tracking-[0.2em] px-4 leading-relaxed italic">Aída, dale este QR al cliente para firmar desde su móvil.</p></div>`;
+            document.getElementById('modal-content').innerHTML = `<div class="text-center"><h3 class="text-lg font-black mb-6 uppercase text-white tracking-widest italic tracking-tighter">Link Cliente</h3><div class="bg-white p-6 rounded-[2.5rem] inline-block shadow-2xl mb-6"><img src="${qr}" class="mx-auto w-48 h-48"></div><p class="text-white/30 text-[9px] uppercase font-bold tracking-[0.2em] px-4 italic leading-relaxed">El cliente debe escanear para firmar.</p></div>`;
             document.getElementById('modal-overlay').classList.remove('hidden');
         };
-
+        
+        // Carga inicial
+        window.irA('dashboard');
     </script>
 </body>
 </html>
