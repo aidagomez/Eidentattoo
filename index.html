@@ -9,10 +9,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="eidentattoo">
+    <!-- Icono solicitado: Máquina Pen Roja -->
     <link rel="apple-touch-icon" href="https://i.ibb.co/LzNfXN8/tattoo-pen-red.png">
     <link rel="icon" type="image/png" href="https://i.ibb.co/LzNfXN8/tattoo-pen-red.png">
 
-    <!-- Estilos Luxury -->
+    <!-- Tailwind & Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
@@ -28,6 +29,7 @@
             overflow-x: hidden;
         }
 
+        /* Estética Luxury Premium */
         .luxury-card {
             background: #0a0a0a;
             border: 1px solid #1a1a1a;
@@ -41,24 +43,30 @@
         .nav-item { color: #444; transition: 0.3s; }
         .nav-item.active { color: var(--accent); }
 
+        /* Contenedor QR - Corrección visual */
         #qrcode-box {
             background: white;
             padding: 15px;
             border-radius: 1.5rem;
-            display: inline-block;
-            width: 200px;
-            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 210px;
+            height: 210px;
             margin: 0 auto;
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
         }
-        #qrcode-box svg { width: 100% !important; height: auto !important; }
+        #qrcode-box img { width: 100% !important; height: auto !important; }
 
         canvas { background: #fff; width: 100%; height: 230px; border-radius: 1rem; cursor: crosshair; touch-action: none; }
         
+        /* Reglas de Modo Cliente */
         .client-mode #nav-bar, .client-mode .admin-only { display: none !important; }
         
+        /* Animaciones de Vista */
         .view { display: none; }
         .view.active { display: block; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .style-btn.selected, .comp-btn.selected {
             background: var(--accent) !important;
@@ -66,29 +74,43 @@
             color: white !important;
         }
 
+        /* Splash Screen (Cargador) */
         #splash {
-            transition: opacity 0.6s ease, visibility 0.6s;
+            position: fixed;
+            inset: 0;
+            background: #000;
             z-index: 9999;
-            pointer-events: all;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease;
         }
         
-        .hide-loader {
+        .loader-hide {
             opacity: 0;
-            visibility: hidden;
             pointer-events: none;
+        }
+
+        input, select {
+            background: #000 !important;
+            border: 1px solid #1a1a1a !important;
+            color: white !important;
+            outline: none;
         }
     </style>
 </head>
 <body class="bg-black">
 
-    <!-- Splash Screen con SVG Nativo (Evita el error de imagen no encontrada) -->
-    <div id="splash" class="fixed inset-0 bg-black flex flex-col items-center justify-center p-10">
+    <!-- Splash Screen (Logo SVG de Máquina Pen) -->
+    <div id="splash">
         <div class="w-32 h-32 text-red-500 mb-8 animate-pulse">
+            <!-- Dibujo SVG de la Pen Machine (Independiente de internet) -->
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
                 <path d="M17 3l4 4-11 11-4-4L17 3z" fill="currentColor" fill-opacity="0.1"/>
-                <path d="M12 8l4 4M7 13l-3 3v4h4l3-3" stroke-linecap="round"/>
-                <rect x="15" y="2" width="5" height="5" rx="1" transform="rotate(45 15 2)" fill="currentColor"/>
-                <path d="M4 20l1-1"/>
+                <rect x="5" y="15" width="4" height="6" rx="1" transform="rotate(-45 5 15)" fill="currentColor"/>
+                <path d="M3 21l2-2M15 5l4 4" stroke-linecap="round"/>
+                <circle cx="12" cy="12" r="1" fill="currentColor"/>
             </svg>
         </div>
         <h1 class="text-3xl font-black tracking-[0.4em] text-red-500 italic uppercase">eidentattoo</h1>
@@ -98,18 +120,18 @@
     <!-- Contenido Principal -->
     <main id="main-content" class="max-w-md mx-auto p-5">
         
-        <!-- Header Panel Admin -->
+        <!-- Header (Panel Admin) -->
         <header class="admin-only flex justify-between items-center mb-8 pt-6">
             <div>
-                <p class="text-[9px] font-bold text-red-500 uppercase tracking-widest">Aída Gómez Studio</p>
-                <h2 class="text-2xl font-black italic tracking-tighter text-white uppercase">eidentattoo</h2>
+                <p class="text-[9px] font-bold text-red-500 uppercase tracking-widest">Aída Gómez</p>
+                <h2 class="text-2xl font-black italic tracking-tighter text-white uppercase leading-none">eidentattoo</h2>
             </div>
             <button onclick="window.abrirModalCita()" class="w-11 h-11 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 border border-red-500/20 active:scale-90 transition-transform">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2.5" stroke-linecap="round"/></svg>
             </button>
         </header>
 
-        <!-- DASHBOARD -->
+        <!-- VISTA: DASHBOARD -->
         <section id="view-dashboard" class="view active">
             <div class="grid grid-cols-2 gap-4 mb-6">
                 <div class="luxury-card p-5">
@@ -123,31 +145,30 @@
             </div>
 
             <div class="luxury-card p-8 text-center">
-                <p class="text-[10px] font-bold text-red-500 uppercase mb-5 tracking-widest italic">Acceso Clientes</p>
-                <div id="qrcode-box" class="shadow-2xl mb-6 flex items-center justify-center">
+                <p class="text-[10px] font-bold text-red-500 uppercase mb-5 tracking-widest italic">Generar Consentimiento</p>
+                <div id="qrcode-box" class="shadow-2xl mb-6">
                     <div id="qrcode"></div>
                 </div>
-                <button onclick="window.compartirURL()" class="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-bold uppercase tracking-widest active:bg-white/10">Compartir Enlace</button>
+                <p class="text-[10px] text-gray-500 px-4 mb-8 leading-relaxed">Escanea este código con el móvil del cliente para que firme el contrato legal.</p>
+                <button onclick="window.compartirURL()" class="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-bold uppercase tracking-widest active:bg-white/10 transition-colors">Compartir Enlace</button>
             </div>
         </section>
 
-        <!-- AGENDA CON WHATSAPP -->
+        <!-- VISTA: AGENDA -->
         <section id="view-agenda" class="view">
-            <h3 class="text-lg font-black mb-5 italic uppercase flex items-center gap-3">
-                <span class="w-1.5 h-6 bg-red-500 rounded-full"></span> Próximas Citas
-            </h3>
+            <h3 class="text-lg font-black mb-5 italic uppercase flex items-center gap-3">Agenda</h3>
             <div id="agenda-list" class="space-y-4">
-                <p class="text-center text-gray-700 py-12 text-xs">Sincronizando agenda...</p>
+                <p class="text-center text-gray-700 py-12 text-xs uppercase tracking-widest">Sincronizando...</p>
             </div>
         </section>
 
-        <!-- CALCULADORA AJUSTADA -->
+        <!-- VISTA: CALCULADORA PRO -->
         <section id="view-calc" class="view">
-            <h3 class="text-lg font-black mb-5 italic uppercase">Calculadora Pro</h3>
+            <h3 class="text-lg font-black mb-5 italic uppercase">Calculadora</h3>
             <div class="luxury-card p-7 space-y-7">
                 <div>
                     <label class="text-[10px] font-bold text-gray-500 uppercase mb-2 block tracking-widest">Tamaño (cm)</label>
-                    <input type="number" id="calc-cm" value="5" class="w-full rounded-xl p-4 text-2xl font-black bg-black border border-white/10 text-white outline-none focus:border-red-500">
+                    <input type="number" id="calc-cm" value="5" class="w-full rounded-xl p-4 text-2xl font-black border-white/5">
                 </div>
                 <div>
                     <label class="text-[10px] font-bold text-gray-500 uppercase mb-3 block tracking-widest text-red-500">Estilos</label>
@@ -160,26 +181,26 @@
                     </div>
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-3 block tracking-widest">Complejidad Detalle</label>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-3 block tracking-widest">Complejidad</label>
                     <div class="grid grid-cols-3 gap-2">
-                        <button onclick="window.toggleComp(this, 0)" class="comp-btn selected p-3 border border-white/5 rounded-xl text-[9px] font-bold uppercase bg-white/5">Básico</button>
-                        <button onclick="window.toggleComp(this, 0.20)" class="comp-btn p-3 border border-white/5 rounded-xl text-[9px] font-bold uppercase bg-white/5">Medio (+20%)</button>
+                        <button onclick="window.toggleComp(this, 0)" class="comp-btn selected p-3 border border-white/5 rounded-xl text-[9px] font-bold uppercase bg-white/5">Básica</button>
+                        <button onclick="window.toggleComp(this, 0.20)" class="comp-btn p-3 border border-white/5 rounded-xl text-[9px] font-bold uppercase bg-white/5">Media (+20%)</button>
                         <button onclick="window.toggleComp(this, 0.45)" class="comp-btn p-3 border border-white/5 rounded-xl text-[9px] font-bold uppercase bg-white/5">Pro (+45%)</button>
                     </div>
                 </div>
                 <div class="pt-6 border-t border-white/5 flex justify-between items-end">
                     <div>
-                        <p class="text-[10px] font-bold text-gray-600 uppercase">Presupuesto</p>
+                        <p class="text-[10px] font-bold text-gray-500 uppercase">Presupuesto</p>
                         <p class="text-5xl font-black text-red-500" id="calc-res">40€</p>
                     </div>
-                    <p class="text-[9px] text-gray-500 mb-2 uppercase italic">Mínimo 40€</p>
+                    <p class="text-[9px] text-gray-500 mb-2 uppercase italic">Min. 40€</p>
                 </div>
             </div>
         </section>
 
-        <!-- STOCK -->
+        <!-- VISTA: STOCK -->
         <section id="view-stock" class="view">
-            <h3 class="text-lg font-black mb-5 italic uppercase text-red-500">Materiales</h3>
+            <h3 class="text-lg font-black mb-5 italic uppercase">Materiales</h3>
             <div class="luxury-card overflow-hidden">
                 <table class="w-full text-left text-xs">
                     <thead>
@@ -194,26 +215,26 @@
             </div>
         </section>
 
-        <!-- FIRMAS -->
+        <!-- VISTA: FIRMAS -->
         <section id="view-history" class="view">
             <div class="flex justify-between items-center mb-5">
-                <h3 class="text-lg font-black italic uppercase text-red-500">Historial</h3>
-                <button onclick="window.verModelo()" class="text-[9px] text-gray-500 font-bold border border-white/10 px-4 py-2 rounded-full uppercase">Contrato Legal</button>
+                <h3 class="text-lg font-black italic uppercase text-red-500">Consentimientos</h3>
+                <button onclick="window.verModelo()" class="text-[9px] text-gray-500 font-bold border border-white/10 px-4 py-2 rounded-full uppercase">Ver Contrato</button>
             </div>
             <div id="firmas-list" class="space-y-4"></div>
         </section>
 
-        <!-- CLIENTE: FIRMA LEGAL -->
+        <!-- VISTA: CLIENTE (FIRMA LEGAL) -->
         <section id="view-client-consent" class="view">
             <div class="text-center mb-8">
                 <div class="w-12 h-12 text-red-500 mx-auto mb-3"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 9h6l-5 4 2 8-6-5-6 5 2-8-5-4h6l3-9z"/></svg></div>
-                <h2 class="text-xl font-black italic text-red-500 uppercase tracking-widest">eidentattoo</h2>
+                <h2 class="text-2xl font-black italic text-red-500 uppercase tracking-widest">eidentattoo</h2>
                 <p class="text-[8px] text-gray-500 uppercase tracking-[0.4em]">Consentimiento Sanitario Oficial</p>
             </div>
             
             <div class="luxury-card p-6 space-y-5">
-                <div id="legal-text-display" class="text-[10px] text-gray-400 bg-black p-4 rounded-xl leading-relaxed border border-white/5 h-48 overflow-y-auto legal-scroll pr-2">
-                    <!-- Texto legal inyectado por JS -->
+                <div id="legal-text-display" class="text-[10px] text-gray-400 bg-black p-4 rounded-xl leading-relaxed border border-white/5 h-48 overflow-y-auto pr-2">
+                    <!-- Texto legal inyectado -->
                 </div>
                 <div class="grid grid-cols-1 gap-3">
                     <input type="text" id="c-name" placeholder="Nombre completo" class="w-full rounded-xl p-4 text-xs font-bold bg-black border border-white/10 text-white outline-none">
@@ -229,20 +250,20 @@
 
     </main>
 
-    <!-- Modal Nueva Cita -->
+    <!-- Modal Cita -->
     <div id="modal-cita" class="fixed inset-0 bg-black/98 z-[1200] hidden flex items-center justify-center p-6">
         <div class="luxury-card p-7 w-full max-w-sm border-red-500/30">
-            <h2 class="text-sm font-black text-red-500 mb-5 uppercase italic tracking-widest">Añadir Cita</h2>
+            <h2 class="text-sm font-black text-red-500 mb-5 uppercase italic tracking-widest text-center">Nueva Sesión</h2>
             <div class="space-y-4">
-                <input type="text" id="new-client" placeholder="Cliente" class="w-full rounded-xl p-4 text-xs font-bold bg-black border border-white/10">
-                <input type="tel" id="new-tel" placeholder="WhatsApp" class="w-full rounded-xl p-4 text-xs font-bold bg-black border border-white/10">
+                <input type="text" id="new-client" placeholder="Nombre Cliente" class="w-full rounded-xl p-4 text-xs font-bold bg-black border border-white/10">
+                <input type="tel" id="new-tel" placeholder="WhatsApp (ej: 600000000)" class="w-full rounded-xl p-4 text-xs font-bold bg-black border border-white/10">
                 <div class="grid grid-cols-2 gap-3">
                     <input type="date" id="new-date" class="w-full rounded-xl p-4 text-[10px] font-bold bg-black border border-white/10">
                     <input type="time" id="new-time" class="w-full rounded-xl p-4 text-[10px] font-bold bg-black border border-white/10">
                 </div>
                 <div class="flex gap-3 pt-2">
-                    <button onclick="window.abrirModalCita()" class="flex-1 py-4 bg-white/5 rounded-xl text-[10px] font-bold uppercase">Cerrar</button>
-                    <button onclick="window.guardarCita()" class="flex-1 py-4 btn-primary rounded-xl text-[10px] font-bold uppercase">Guardar</button>
+                    <button onclick="window.abrirModalCita()" class="flex-1 py-4 bg-white/5 rounded-xl text-[10px] font-bold uppercase tracking-widest">Cerrar</button>
+                    <button onclick="window.guardarCita()" class="flex-1 py-4 btn-primary rounded-xl text-[10px] font-bold uppercase tracking-widest">Guardar</button>
                 </div>
             </div>
         </div>
@@ -251,9 +272,9 @@
     <!-- Modal Modelo Legal -->
     <div id="modal-legal" class="fixed inset-0 bg-black/99 z-[1300] hidden flex items-center justify-center p-6">
         <div class="luxury-card p-8 w-full max-w-md border-red-500/30">
-            <h2 class="text-xs font-black text-red-500 mb-5 uppercase italic">Modelo Legal</h2>
-            <div id="legal-text-modal" class="text-[9px] text-gray-500 leading-relaxed mb-8 h-80 overflow-y-auto legal-scroll pr-3"></div>
-            <button onclick="window.verModelo()" class="w-full py-5 btn-primary rounded-2xl text-[10px] font-black uppercase tracking-widest">CERRAR</button>
+            <h2 class="text-xs font-black text-red-500 mb-5 uppercase italic">Modelo de Contrato</h2>
+            <div id="legal-text-modal" class="text-[9px] text-gray-500 leading-relaxed mb-8 h-80 overflow-y-auto pr-3"></div>
+            <button onclick="window.verModelo()" class="w-full py-5 btn-primary rounded-2xl text-[10px] font-black uppercase tracking-widest">CERRAR VISTA</button>
         </div>
     </div>
 
@@ -281,6 +302,7 @@
         </button>
     </nav>
 
+    <!-- Scripts y Firebase -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <script type="importmap">
     { "imports": {
@@ -296,35 +318,32 @@
         import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, doc, updateDoc, deleteDoc } from "firebase/firestore";
 
         const firebaseConfig = JSON.parse(__firebase_config);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'eiden-tattoo-v9-final';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'eiden-tattoo-v11-final';
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
         const TEXTO_LEGAL = `
             <p class="font-bold text-red-500 mb-3 underline uppercase">1. INFORMACIÓN DEL PROCEDIMIENTO</p>
-            <p>Solicito a <strong>Aída Gómez (eidentattoo)</strong> la realización de un tatuaje. Entiendo que es irreversible y que la eliminación no siempre es perfecta.</p>
+            <p>Solicito a <strong>Aída Gómez (eidentattoo)</strong> la realización de un tatuaje irreversible. Se me ha informado de los riesgos y complicaciones.</p>
             <p class="font-bold text-white mt-5 mb-2 uppercase">2. RIESGOS</p>
-            <p>Acepto riesgos de infección o alergias. El estudio cumple normativa de higiene.</p>
-            <p class="font-bold text-red-500 mt-5 mb-2 uppercase underline italic">3. DECLARACIÓN MÉDICA</p>
-            <p><strong>CONFIRMO NO PADECER:</strong> VIH, Hepatitis B/C, diabetes, epilepsia o cardiopatías graves.</p>
-            <p class="font-bold text-white mt-5 mb-2 uppercase">4. PRECIO</p>
-            <p>El <strong>mínimo de sesión es de 40€</strong>. Datos tratados bajo el RGPD.</p>
+            <p>Infecciones locales, reacciones alérgicas o cicatrices defectuosas. El estudio utiliza material estéril de un solo uso.</p>
+            <p class="font-bold text-red-500 mt-5 mb-2 uppercase underline italic">3. DECLARACIÓN MÉDICA (OBLIGATORIA)</p>
+            <p><strong>CONFIRMO NO PADECER:</strong> VIH, Hepatitis B/C, diabetes no controlada, epilepsia, cardiopatías graves o enfermedades de la piel en la zona.</p>
+            <p class="font-bold text-white mt-5 mb-2 uppercase">4. PRECIO Y PRIVACIDAD</p>
+            <p>Mínimo de sesión <strong>40€</strong>. Sus datos se tratan conforme al RGPD para gestión sanitaria del estudio eidentattoo.</p>
         `;
 
-        let activeStyles = [];
+        let activeMultipliers = [];
         let compBonus = 0;
 
-        // --- MANEJO DE CARGA (IMPORTANTE) ---
-        const hideSplash = () => {
-            const loader = document.getElementById('splash');
-            loader.classList.add('hide-loader');
-            // Eliminar del DOM para que no bloquee los clics
-            setTimeout(() => loader.style.display = 'none', 650);
+        // --- CARGA REAL (SOLUCIÓN AL BLOQUEO) ---
+        const closeSplash = () => {
+            const spl = document.getElementById('splash');
+            spl.classList.add('loader-hide');
+            setTimeout(() => { spl.style.display = 'none'; }, 650);
         };
-
-        // Seguridad: máximo 4 segundos
-        const safetyTimeout = setTimeout(hideSplash, 4000);
+        const safetyTimer = setTimeout(closeSplash, 4500);
 
         // --- NAVEGACIÓN ---
         window.irA = (v) => {
@@ -339,28 +358,22 @@
         // --- CALCULADORA ---
         window.toggleStyle = (btn, multi) => {
             btn.classList.toggle('selected');
-            const idx = activeStyles.indexOf(multi);
-            if(idx > -1) activeStyles.splice(idx, 1); else activeStyles.push(multi);
+            const idx = activeMultipliers.indexOf(multi);
+            if(idx > -1) activeMultipliers.splice(idx, 1); else activeMultipliers.push(multi);
             window.recalc();
         };
-
         window.toggleComp = (btn, bonus) => {
             document.querySelectorAll('.comp-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
             compBonus = bonus;
             window.recalc();
         };
-
         window.recalc = () => {
             const cm = parseFloat(document.getElementById('calc-cm').value) || 0;
-            const count = activeStyles.length;
-            if(count === 0) {
-                document.getElementById('calc-res').innerText = "40€";
-                return;
-            }
-            const maxM = Math.max(...activeStyles);
+            if(activeMultipliers.length === 0) { document.getElementById('calc-res').innerText = "40€"; return; }
+            const maxM = Math.max(...activeMultipliers);
             const rate = maxM === 1.0 ? 3.0 : 4.5;
-            const extraMix = (count - 1) * 0.15;
+            const extraMix = (activeMultipliers.length - 1) * 0.15;
             let total = (40 + (cm * rate)) * maxM * (1 + extraMix) * (1 + compBonus);
             document.getElementById('calc-res').innerText = Math.max(40, Math.round(total)) + '€';
         };
@@ -379,36 +392,41 @@
                 const t = e.touches ? e.touches[0] : e;
                 return { x: t.clientX - rect.left, y: t.clientY - rect.top };
             };
-            const start = (e) => { drawing = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); };
-            const move = (e) => { if(!drawing) return; e.preventDefault(); const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
-            canvas.onmousedown = start; canvas.onmousemove = move; window.onmouseup = () => drawing = false;
-            canvas.ontouchstart = start; canvas.ontouchmove = move; canvas.ontouchend = () => drawing = false;
+            canvas.onmousedown = (e) => { drawing = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); };
+            canvas.onmousemove = (e) => { if(drawing) { const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); } };
+            window.onmouseup = () => drawing = false;
+            canvas.ontouchstart = (e) => { drawing = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); };
+            canvas.ontouchmove = (e) => { if(drawing) { e.preventDefault(); const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); } };
+            canvas.ontouchend = () => drawing = false;
         };
         window.clearSig = () => ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
         window.saveSig = async () => {
             const name = document.getElementById('c-name').value;
             const dni = document.getElementById('c-dni').value;
-            if(!name || !dni) return alert("Completa los datos.");
+            if(!name || !dni) return alert("Completa los datos obligatorios.");
             document.getElementById('btn-save-sig').disabled = true;
             try {
                 await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'consentimientos'), {
                     cliente: name, dni: dni, firma: canvas.toDataURL(), timestamp: serverTimestamp()
                 });
-                document.getElementById('view-client-consent').innerHTML = `<div class="p-12 text-center"><div class="text-6xl mb-6">✅</div><h2 class="text-2xl font-black text-red-500 uppercase italic">¡Enviado!</h2><p class="text-[10px] text-gray-500 mt-2">Proceso legal completado.</p></div>`;
-            } catch(e) { alert("Error de red"); document.getElementById('btn-save-sig').disabled = false; }
+                document.getElementById('view-client-consent').innerHTML = `<div class="p-12 text-center"><div class="text-6xl mb-6">✅</div><h2 class="text-xl font-black text-red-500 uppercase italic">¡Firmado!</h2><p class="text-[10px] text-gray-500 mt-2">Gracias. Proceso legal completado.</p></div>`;
+            } catch(e) { alert("Error"); document.getElementById('btn-save-sig').disabled = false; }
         };
 
-        // --- QR ---
+        // --- QR (SOLUCIÓN VISIBILIDAD) ---
         window.initQR = () => {
             const url = window.location.origin + window.location.pathname + '?mode=client';
-            const qr = qrcode(0, 'H'); qr.addData(url); qr.make();
-            document.getElementById('qrcode').innerHTML = qr.createSvgTag(1);
+            const qr = qrcode(0, 'H');
+            qr.addData(url);
+            qr.make();
+            // Generamos el QR como un elemento img para asegurar compatibilidad
+            document.getElementById('qrcode').innerHTML = qr.createImgTag(5);
         };
+
         window.compartirURL = () => {
             const url = window.location.origin + window.location.pathname + '?mode=client';
             if(navigator.share) navigator.share({title: 'Firma eidentattoo', url});
-            else { navigator.clipboard.writeText(url); alert("Enlace copiado"); }
+            else { navigator.clipboard.writeText(url); alert("Copiado"); }
         };
 
         window.abrirModalCita = () => document.getElementById('modal-cita').classList.toggle('hidden');
@@ -428,7 +446,7 @@
         };
         window.verModelo = () => document.getElementById('modal-legal').classList.toggle('hidden');
 
-        // --- SYNC ---
+        // --- SYNC REALTIME ---
         function startSync() {
             document.getElementById('legal-text-display').innerHTML = TEXTO_LEGAL;
             document.getElementById('legal-text-modal').innerHTML = TEXTO_LEGAL;
@@ -442,10 +460,10 @@
                     const waUrl = `https://wa.me/${c.telefono.replace(/\s/g, '')}?text=${waMsg}`;
                     list.innerHTML += `
                         <div class="luxury-card p-5 flex justify-between items-center border-l-4 border-red-500">
-                            <div><h4 class="font-bold text-sm uppercase italic">${c.nombre}</h4><p class="text-[9px] text-gray-600">${fch} • ${c.hora || '10:00'}</p></div>
+                            <div><h4 class="font-bold text-sm uppercase italic tracking-tight">${c.nombre}</h4><p class="text-[9px] text-gray-600">${fch} • ${c.hora || '10:00'}</p></div>
                             <div class="flex gap-2">
                                 <a href="${waUrl}" target="_blank" class="w-10 h-10 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center border border-green-500/20 active:scale-90 transition-transform"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.93.55 3.72 1.5 5.25L2 22l4.75-1.5c1.53.95 3.32 1.5 5.25 1.5 5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg></a>
-                                <button onclick="window.borrarCita('${d.id}')" class="w-10 h-10 bg-white/5 text-gray-500 rounded-full flex items-center justify-center border border-white/10 active:scale-90"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2"/></svg></button>
+                                <button onclick="window.borrarCita('${d.id}')" class="w-10 h-10 bg-white/5 text-gray-500 rounded-full flex items-center justify-center border border-white/10 active:scale-90 transition-transform"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2" stroke-linecap="round"/></svg></button>
                             </div>
                         </div>`;
                 });
@@ -465,7 +483,7 @@
                 snap.forEach(d => {
                     const f = d.data();
                     const fch = f.timestamp ? new Date(f.timestamp.seconds*1000).toLocaleDateString() : 'Hoy';
-                    list.innerHTML += `<div class="luxury-card p-5"><div class="flex justify-between items-start mb-3"><div><p class="font-bold text-xs uppercase italic tracking-tight">${f.cliente}</p><p class="text-[8px] text-gray-500">${f.dni}</p></div><span class="text-[8px] text-gray-700">${fch}</span></div><img src="${f.firma}" class="w-full bg-white rounded-lg h-28 object-contain invert border border-white/5 shadow-inner"></div>`;
+                    list.innerHTML += `<div class="luxury-card p-5"><div class="flex justify-between items-start mb-3"><div><p class="font-bold text-xs uppercase italic tracking-tight">${f.cliente}</p><p class="text-[8px] text-gray-500">${f.dni}</p></div><span class="text-[8px] text-gray-700">${fch}</span></div><img src="${f.firma}" class="w-full bg-white rounded-lg h-28 object-contain invert border border-white/5"></div>`;
                 });
                 document.getElementById('stat-firmas').innerText = snap.size;
             });
@@ -474,16 +492,15 @@
         window.upSt = async (id, v) => await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', id), { cantidad: v });
         window.borrarCita = async (id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agenda', id)); };
 
-        // --- INIT ---
+        // --- INICIO ---
         onAuthStateChanged(auth, async (u) => {
             if(u) {
                 startSync();
                 const isCl = new URLSearchParams(window.location.search).get('mode') === 'client';
                 if(isCl) { document.body.classList.add('client-mode'); window.irA('client-consent'); }
                 else { window.irA('dashboard'); }
-                
-                clearTimeout(safetyTimeout);
-                hideSplash();
+                clearTimeout(safetyTimer);
+                closeSplash();
             } else { await signInAnonymously(auth); }
         });
     </script>
