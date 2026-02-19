@@ -2,461 +2,421 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>eidentattoo | Aída Gómez</title>
-    
-    <!-- Configuración PWA e Icono -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="eidentattoo">
-    <!-- Icono solicitado: Máquina Pen Roja -->
-    <link rel="apple-touch-icon" href="https://i.ibb.co/LzNfXN8/tattoo-pen-red.png">
-    <link rel="icon" type="image/png" href="https://i.ibb.co/LzNfXN8/tattoo-pen-red.png">
-
-    <!-- Fonts & Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eidentattoo | Gestión Premium & Legal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        :root { --accent: #ef4444; --bg: #000; }
-        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; outline: none; }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #000;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        .luxury-card {
-            background: #0a0a0a;
-            border: 1px solid #1a1a1a;
-            border-radius: 2rem;
-            box-shadow: 0 10px 40px -10px rgba(0,0,0,1);
-        }
-
-        .btn-primary { background: var(--accent); color: white; transition: 0.2s; border-radius: 1rem; font-weight: 800; border: none; }
-        .btn-primary:active { transform: scale(0.96); opacity: 0.8; }
-
-        .nav-item { color: #333; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; flex: 1; }
-        .nav-item.active { color: var(--accent); }
-
-        /* QR FIX DEFINITIVO */
-        #qrcode-box {
-            background: white;
-            padding: 10px;
-            border-radius: 1.5rem;
-            display: inline-flex;
-            width: 200px;
-            height: 200px;
-            margin: 0 auto;
-            justify-content: center;
-            align-items: center;
-        }
-        #qrcode-box img { width: 100% !important; height: 100% !important; border-radius: 0.5rem; }
-
-        /* Canvas Firma */
-        #sig-canvas { background: #fff; width: 100%; height: 260px; border-radius: 1.5rem; cursor: crosshair; touch-action: none; border: 1px solid #333; }
-
-        /* Gestión de Vistas */
-        .view { display: none; padding-bottom: 120px; width: 100%; }
-        .view.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; } }
-
-        /* MODO CLIENTE: Bloqueo de navegación */
-        .client-mode #nav-bar, .client-mode .admin-only { display: none !important; }
-        .client-mode #view-consent { display: block !important; padding-bottom: 40px; }
-
-        .style-btn.selected, .comp-btn.selected {
-            background: var(--accent) !important;
-            border-color: var(--accent) !important;
-            color: white !important;
-        }
-
-        input, select {
-            background: #000 !important;
-            border: 1px solid #1a1a1a !important;
-            color: white !important;
-            padding: 12px;
-            border-radius: 12px;
-            width: 100%;
-        }
-
-        .legal-box {
-            font-size: 11px;
-            line-height: 1.5;
-            color: #999;
-            background: #050505;
-            padding: 20px;
-            border-radius: 1.2rem;
-            border: 1px solid #111;
-            max-height: 220px;
-            overflow-y: auto;
-        }
-
-        .safe-area-bottom { padding-bottom: calc(env(safe-area-inset-bottom) + 24px); }
+        :root { --primary: #ef4444; --bg-dark: #000000; --card-bg: #111111; --radius-xl: 2rem; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-dark); color: #ffffff; margin: 0; overflow-x: hidden; }
+        .rounded-custom { border-radius: var(--radius-xl); }
+        .bg-card { background-color: var(--card-bg); }
+        .text-accent { color: var(--primary); }
+        .bg-accent { background-color: var(--primary); }
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        input, select, textarea { background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: white !important; }
+        input:focus { border-color: var(--primary) !important; outline: none; }
+        #sig-canvas { touch-action: none; cursor: crosshair; background-color: white; width: 100%; height: 200px; border-radius: 1rem; }
+        .checkbox-custom { width: 1.2rem; height: 1.2rem; accent-color: var(--primary); }
     </style>
 </head>
-<body class="bg-black">
+<body>
 
-    <main id="app" class="max-w-md mx-auto p-5">
-        
-        <!-- Header Principal (Aída) -->
-        <header class="admin-only flex justify-between items-center mb-8 pt-4">
+    <!-- NAVEGACIÓN PRINCIPAL -->
+    <nav id="main-nav" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md glass rounded-custom p-2 flex justify-around items-center">
+        <button onclick="window.irA('dashboard')" class="p-4 rounded-full hover:bg-white/10" title="Panel"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg></button>
+        <button onclick="window.irA('agenda')" class="p-4 rounded-full hover:bg-white/10" title="Agenda"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></button>
+        <button onclick="window.irA('calc')" class="p-4 rounded-full hover:bg-white/10" title="Calculadora"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg></button>
+        <button onclick="window.irA('stock')" class="p-4 rounded-full hover:bg-white/10" title="Stock"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg></button>
+        <button onclick="window.irA('signature')" class="p-4 rounded-full hover:bg-white/10" title="Firma"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
+    </nav>
+
+    <main class="min-h-screen p-6 pb-32 max-w-2xl mx-auto">
+        <header class="mb-10 flex justify-between items-center">
             <div>
-                <p class="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em]">Aída Gómez</p>
-                <h1 class="text-2xl font-black italic tracking-tighter uppercase">eidentattoo</h1>
+                <h1 class="text-4xl font-extrabold tracking-tighter">eiden<span class="text-accent">tattoo</span></h1>
+                <p class="text-gray-500 font-light tracking-widest text-xs uppercase">Estudio Profesional • Aída Gómez</p>
             </div>
-            <button onclick="window.abrirCita()" class="w-11 h-11 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 border border-red-500/20 active:scale-90">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M12 4v16m8-8H4" stroke-linecap="round"/></svg>
-            </button>
+            <div id="status-tag" class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Admin</div>
         </header>
 
         <!-- DASHBOARD -->
-        <section id="view-dashboard" class="view active">
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="luxury-card p-5 text-center">
-                    <p class="text-[9px] font-bold text-gray-500 uppercase mb-1">Citas Hoy</p>
-                    <p class="text-3xl font-black" id="stat-citas">0</p>
+        <section id="dashboard" class="section active">
+            <div class="grid grid-cols-2 gap-4 mb-8">
+                <div class="bg-card p-6 rounded-custom border border-white/5 shadow-2xl">
+                    <p class="text-gray-500 text-[10px] uppercase font-bold mb-1">Citas Activas</p>
+                    <h2 id="stats-citas" class="text-4xl font-black">0</h2>
                 </div>
-                <div class="luxury-card p-5 border-l-4 border-red-500 text-center">
-                    <p class="text-[9px] font-bold text-gray-500 uppercase mb-1">Material</p>
-                    <p class="text-2xl font-black text-white" id="stat-stock">OK</p>
+                <div class="bg-card p-6 rounded-custom border border-white/5 shadow-2xl">
+                    <p class="text-gray-500 text-[10px] uppercase font-bold mb-1">Stock Crítico</p>
+                    <h2 id="stats-stock" class="text-4xl font-black text-accent">0</h2>
                 </div>
             </div>
-
-            <div class="luxury-card p-8 text-center">
-                <p class="text-[10px] font-bold text-red-500 uppercase mb-5 tracking-widest italic text-center">Firma de Clientes</p>
-                <div id="qrcode-box" class="shadow-2xl mb-6">
-                    <div id="qrcode"></div>
-                </div>
-                <p class="text-[11px] text-gray-500 px-4 mb-8 leading-relaxed">Escanea esto para que el cliente firme el contrato sanitario oficial en su móvil.</p>
-                <button onclick="window.compartirURL()" class="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-bold uppercase tracking-widest active:bg-white/10">Copiar Enlace</button>
+            
+            <div class="bg-card p-8 rounded-custom border border-white/5 flex flex-col items-center">
+                <h3 class="text-lg font-bold mb-2">QR Firma Cliente</h3>
+                <p class="text-gray-500 text-xs text-center mb-6">Muestra este código al cliente para que rellene el consentimiento en su móvil.</p>
+                <div id="qrcode" class="p-4 bg-white rounded-2xl mb-6 shadow-xl"></div>
+                <button onclick="window.copyLink()" class="w-full py-4 glass rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-white/10 transition-all">Copiar Enlace Manual</button>
             </div>
         </section>
 
         <!-- AGENDA -->
-        <section id="view-agenda" class="view">
-            <h3 class="text-lg font-black mb-5 italic uppercase text-red-500 tracking-tighter">Agenda de Sesiones</h3>
-            <div id="agenda-list" class="space-y-4">
-                <p class="text-center text-gray-700 py-12 text-xs">Cargando agenda...</p>
+        <section id="agenda" class="section">
+            <div class="bg-card p-6 rounded-custom border border-white/5 mb-8">
+                <h3 class="text-xl font-bold mb-6">Agendar Cita</h3>
+                <form id="form-cita" class="space-y-4">
+                    <input type="text" id="cita-nombre" placeholder="Nombre completo" class="w-full p-4 rounded-xl" required>
+                    <input type="tel" id="cita-tel" placeholder="WhatsApp (Ej: 34600000000)" class="w-full p-4 rounded-xl" required>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="date" id="cita-fecha" class="p-4 rounded-xl" required>
+                        <input type="time" id="cita-hora" class="p-4 rounded-xl" required>
+                    </div>
+                    <button type="submit" class="w-full bg-accent p-4 rounded-xl font-bold uppercase tracking-tighter hover:brightness-110">Confirmar Cita</button>
+                </form>
             </div>
-        </section>
-
-        <!-- CALCULADORA -->
-        <section id="view-calc" class="view">
-            <h3 class="text-lg font-black mb-5 italic uppercase text-white tracking-tighter">Calculadora Pro</h3>
-            <div class="luxury-card p-7 space-y-6">
-                <div>
-                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-2 block">Tamaño aproximado (cm)</label>
-                    <input type="number" id="calc-cm" value="5" class="text-2xl font-black">
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-3 block text-red-500">Estilos (Selección Múltiple)</label>
-                    <div class="grid grid-cols-2 gap-2" id="style-grid">
-                        <button onclick="window.toggleStyle(this, 1.0)" class="style-btn p-3 border border-white/5 rounded-xl text-[10px] font-bold uppercase bg-white/5">Lineal (3€/cm)</button>
-                        <button onclick="window.toggleStyle(this, 1.5)" class="style-btn p-3 border border-white/5 rounded-xl text-[10px] font-bold uppercase bg-white/5">Anime B&G</button>
-                        <button onclick="window.toggleStyle(this, 1.9)" class="style-btn p-3 border border-white/5 rounded-xl text-[10px] font-bold uppercase bg-white/5">Anime Color</button>
-                        <button onclick="window.toggleStyle(this, 2.1)" class="style-btn p-3 border border-white/5 rounded-xl text-[10px] font-bold uppercase bg-white/5">Japonés</button>
-                        <button onclick="window.toggleStyle(this, 2.4)" class="style-btn p-3 border border-white/5 rounded-xl text-[10px] font-bold uppercase bg-white/5">Realismo</button>
-                    </div>
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-3 block">Complejidad Extra %</label>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button onclick="window.setComp(this, 0)" class="comp-btn selected p-3 border border-white/5 rounded-xl text-[9px] font-bold uppercase bg-white/5">0%</button>
-                        <button onclick="window.setComp(this, 20)" class="comp-btn p-3 border border-white/5 rounded-xl text-[9px] font-bold uppercase bg-white/5">+20%</button>
-                        <button onclick="window.setComp(this, 45)" class="comp-btn p-3 border border-white/5 rounded-xl text-[9px] font-bold uppercase bg-white/5">+45%</button>
-                    </div>
-                </div>
-                <div class="pt-6 border-t border-white/5 flex justify-between items-end">
-                    <div>
-                        <p class="text-[10px] font-bold text-gray-500 uppercase">Estimado</p>
-                        <p class="text-5xl font-black text-red-500" id="calc-res">40€</p>
-                    </div>
-                    <p class="text-[9px] text-gray-600 mb-2 uppercase italic">Min. 40€</p>
-                </div>
-            </div>
+            <h3 class="text-lg font-bold mb-4 px-2">Próximas Sesiones</h3>
+            <div id="lista-citas" class="space-y-4"></div>
         </section>
 
         <!-- STOCK -->
-        <section id="view-stock" class="view">
-            <h3 class="text-lg font-black mb-5 italic uppercase text-red-500">Materiales</h3>
-            <div class="luxury-card overflow-hidden">
-                <table class="w-full text-left text-xs">
-                    <thead>
-                        <tr class="bg-white/5 text-[8px] font-bold text-gray-600 uppercase">
-                            <th class="p-5">Nombre</th>
-                            <th class="p-5 text-center">Cant.</th>
-                            <th class="p-5 text-right">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody id="stock-list"></tbody>
-                </table>
+        <section id="stock" class="section">
+            <div class="bg-card p-6 rounded-custom border border-white/5 mb-8">
+                <h3 class="text-xl font-bold mb-6">Gestión de Material</h3>
+                <div class="space-y-4">
+                    <input type="text" id="stock-nombre" placeholder="Producto (Ej: Agujas 5RL)" class="w-full p-4 rounded-xl">
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="number" id="stock-cant" placeholder="Cantidad" class="p-4 rounded-xl">
+                        <div class="flex flex-col">
+                            <label class="text-[10px] text-gray-500 ml-2 mb-1 uppercase">Caducidad</label>
+                            <input type="date" id="stock-cad" class="p-4 rounded-xl">
+                        </div>
+                    </div>
+                    <button onclick="window.addStock()" class="w-full bg-white text-black p-4 rounded-xl font-bold uppercase tracking-widest">Añadir al Inventario</button>
+                </div>
+            </div>
+            <div id="lista-stock" class="space-y-2"></div>
+        </section>
+
+        <!-- CALCULADORA -->
+        <section id="calc" class="section">
+            <div class="bg-card p-8 rounded-custom border border-white/5 space-y-8">
+                <h2 class="text-2xl font-black italic tracking-tighter">PRESUPUESTADOR</h2>
+                <div>
+                    <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Tamaño Estimado (cm)</label>
+                    <input type="number" id="calc-cm" value="5" class="w-full p-6 text-4xl font-black rounded-2xl bg-black/40">
+                </div>
+                <div class="grid grid-cols-2 gap-2" id="styles-grid">
+                    <button onclick="window.selStyle(this, 1.0)" class="p-4 border border-white/10 rounded-xl text-xs font-bold uppercase bg-accent" data-m="1.0">Lineal</button>
+                    <button onclick="window.selStyle(this, 1.5)" class="p-4 border border-white/10 rounded-xl text-xs font-bold uppercase" data-m="1.5">Anime B&G</button>
+                    <button onclick="window.selStyle(this, 1.9)" class="p-4 border border-white/10 rounded-xl text-xs font-bold uppercase" data-m="1.9">Anime Color</button>
+                    <button onclick="window.selStyle(this, 2.1)" class="p-4 border border-white/10 rounded-xl text-xs font-bold uppercase" data-m="2.1">Japonés</button>
+                    <button onclick="window.selStyle(this, 2.4)" class="p-4 border border-white/10 rounded-xl text-xs font-bold uppercase" data-m="2.4">Realismo</button>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-500 uppercase font-bold mb-2 block">Complejidad / Detalle: <span id="comp-label">0%</span></label>
+                    <input type="range" id="calc-range" min="0" max="100" value="0" class="w-full accent-red-600">
+                </div>
+                <div class="border-t border-white/10 pt-6 flex justify-between items-center">
+                    <span class="text-xs text-gray-500 uppercase font-bold">Total Final</span>
+                    <h2 id="total-price" class="text-6xl font-black text-accent tracking-tighter">40€</h2>
+                </div>
             </div>
         </section>
 
-        <!-- FIRMAS (ADMIN) -->
-        <section id="view-signatures" class="view">
-            <div class="flex justify-between items-center mb-5">
-                <h3 class="text-lg font-black italic uppercase text-red-500">Documentos</h3>
-                <button onclick="window.verModeloLegal()" class="text-[9px] text-gray-400 font-bold border border-white/10 px-4 py-2 rounded-full uppercase">Contrato Legal</button>
+        <!-- CONSENTIMIENTO INFORMADO (LEGAL) -->
+        <section id="signature" class="section">
+            <div class="bg-card p-6 rounded-custom border border-white/5 space-y-6">
+                <h2 class="text-xl font-bold text-center underline decoration-accent decoration-2 underline-offset-8">CONSENTIMIENTO INFORMADO</h2>
+                
+                <div class="bg-black/40 p-5 rounded-xl text-[11px] leading-relaxed text-gray-400 border border-white/5 h-64 overflow-y-auto space-y-4">
+                    <p class="text-white font-bold uppercase">1. Información del Procedimiento</p>
+                    <p>El tatuaje consiste en la introducción de pigmentos en la dermis mediante punción. Se informa de que es un procedimiento permanente. Su eliminación requiere láser y no garantiza la restitución total de la piel.</p>
+                    
+                    <p class="text-white font-bold uppercase">2. Riesgos Sanitarios</p>
+                    <p>Riesgos comunes: Dolor local, inflamación, sangrado leve, hematomas. Riesgos específicos: Infecciones bacterianas, transmisión de enfermedades si no se sigue la asepsia, reacciones alérgicas a tintas o metales, queloides o cicatrización hipertrófica.</p>
+                    
+                    <p class="text-white font-bold uppercase">3. Cuestionario de Salud (Obligatorio)</p>
+                    <div class="space-y-2 text-white">
+                        <label class="flex items-center gap-3"><input type="checkbox" class="checkbox-custom health-q" value="Alergias"> ¿Padece alguna alergia (Níquel, Látex, etc.)?</label>
+                        <label class="flex items-center gap-3"><input type="checkbox" class="checkbox-custom health-q" value="Diabetes"> ¿Padece Diabetes o problemas circulatorios?</label>
+                        <label class="flex items-center gap-3"><input type="checkbox" class="checkbox-custom health-q" value="Hématica"> ¿Padece VIH, Hepatitis B/C o Sífilis?</label>
+                        <label class="flex items-center gap-3"><input type="checkbox" class="checkbox-custom health-q" value="Corazón"> ¿Padece valvulopatías o epilepsia?</label>
+                        <label class="flex items-center gap-3"><input type="checkbox" class="checkbox-custom health-q" value="Embarazo"> ¿Está embarazada o en periodo de lactancia?</label>
+                    </div>
+
+                    <p class="text-white font-bold uppercase">4. Compromiso de Cuidados</p>
+                    <p>El cliente se compromete a seguir las pautas de curación: Limpieza con jabón neutro, aplicación de crema específica y evitar exposición solar, piscinas o saunas durante 15 días.</p>
+                </div>
+
+                <form id="form-legal" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" id="legal-nombre" placeholder="Nombre y Apellidos" required class="p-4 rounded-xl">
+                        <input type="text" id="legal-dni" placeholder="DNI / NIE / Pasaporte" required class="p-4 rounded-xl">
+                    </div>
+                    <div class="bg-white p-2 rounded-xl">
+                        <label class="block text-black text-[10px] font-black uppercase mb-1 ml-2">Firma del cliente:</label>
+                        <canvas id="sig-canvas"></canvas>
+                        <button type="button" onclick="window.clearSig()" class="text-black text-[10px] font-bold p-2">Limpiar Firma</button>
+                    </div>
+                    <button type="submit" class="w-full bg-accent p-5 rounded-xl font-bold uppercase tracking-widest shadow-lg shadow-red-900/40">Finalizar y Firmar Legalmente</button>
+                </form>
             </div>
-            <div id="firmas-list" class="space-y-4"></div>
         </section>
-
-        <!-- MODO CLIENTE: FIRMA LEGAL -->
-        <section id="view-consent" class="view">
-            <div class="text-center mb-8 pt-4">
-                <div class="w-16 h-16 text-red-500 mx-auto mb-3">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 9h6l-5 4 2 8-6-5-6 5 2-8-5-4h6l3-9z"/></svg>
-                </div>
-                <h2 class="text-2xl font-black italic text-red-500 uppercase tracking-widest">eidentattoo</h2>
-                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.2em]">Consentimiento Informado Sanitario</p>
-            </div>
-
-            <div class="luxury-card p-6 space-y-5">
-                <div id="legal-text-main" class="legal-box">
-                    <!-- Texto oficial España inyectado aquí -->
-                </div>
-
-                <div class="space-y-3">
-                    <input type="text" id="c-name" placeholder="Nombre y Apellidos">
-                    <input type="text" id="c-dni" placeholder="DNI / NIE / Pasaporte">
-                </div>
-
-                <div class="relative">
-                    <p class="text-[9px] font-bold text-gray-500 uppercase mb-2">Firma Digital del Cliente:</p>
-                    <canvas id="sig-canvas"></canvas>
-                    <button onclick="window.limpiarFirma()" class="absolute bottom-2 right-2 text-[8px] text-gray-500 font-bold border border-white/10 px-3 py-2 rounded-lg bg-black/80 uppercase">Borrar</button>
-                </div>
-
-                <button id="btn-save-sig" onclick="window.saveSig()" class="w-full py-5 btn-primary font-black uppercase tracking-widest shadow-xl shadow-red-500/20">CONFIRMAR Y FIRMAR</button>
-            </div>
-        </section>
-
     </main>
 
-    <!-- Barra de Navegación -->
-    <nav id="nav-bar" class="fixed bottom-0 left-0 right-0 flex justify-around items-center p-4 z-[5000] bg-black/95 backdrop-blur-xl border-t border-white/5 safe-area-bottom">
-        <button onclick="window.irA('dashboard')" class="nav-item active" data-view="dashboard">
-            <svg class="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-            <span class="text-[7px] font-black uppercase">Panel</span>
-        </button>
-        <button onclick="window.irA('agenda')" class="nav-item" data-view="agenda">
-            <svg class="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            <span class="text-[7px] font-black uppercase">Citas</span>
-        </button>
-        <button onclick="window.irA('calc')" class="nav-item" data-view="calc">
-            <svg class="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-            <span class="text-[7px] font-black uppercase">Precio</span>
-        </button>
-        <button onclick="window.irA('stock')" class="nav-item" data-view="stock">
-            <svg class="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-            <span class="text-[7px] font-black uppercase">Stock</span>
-        </button>
-        <button onclick="window.irA('signatures')" class="nav-item" data-view="signatures">
-            <svg class="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            <span class="text-[7px] font-black uppercase">Firmas</span>
-        </button>
-    </nav>
+    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-[100] hidden bg-white text-black px-8 py-4 rounded-full font-black text-sm shadow-2xl uppercase tracking-tighter"></div>
 
-    <!-- Modal Modelo Legal (Aída) -->
-    <div id="modal-legal" class="fixed inset-0 bg-black/98 z-[10000] hidden flex items-center justify-center p-6">
-        <div class="luxury-card p-8 w-full max-w-md border-red-500/30">
-            <h2 class="text-sm font-black text-red-500 mb-5 uppercase italic text-center">Modelo Consentimiento España</h2>
-            <div id="legal-text-modal" class="legal-box h-80 mb-8"></div>
-            <button onclick="window.verModeloLegal()" class="w-full py-4 btn-primary font-black uppercase tracking-widest">CERRAR MODELO</button>
-        </div>
-    </div>
-
-    <!-- Modal Nueva Cita -->
-    <div id="modal-cita" class="fixed inset-0 bg-black/98 z-[11000] hidden flex items-center justify-center p-6">
-        <div class="luxury-card p-7 w-full max-w-sm border-white/10">
-            <h2 class="text-sm font-black text-red-500 mb-5 uppercase italic text-center">Agendar Sesión</h2>
-            <div class="space-y-4">
-                <input type="text" id="n-client" placeholder="Nombre">
-                <input type="tel" id="n-tel" placeholder="WhatsApp (ej: 600000000)">
-                <div class="grid grid-cols-2 gap-3">
-                    <input type="date" id="n-date">
-                    <input type="time" id="n-time">
-                </div>
-                <div class="flex gap-3 pt-2">
-                    <button onclick="window.abrirCita()" class="flex-1 py-4 bg-white/5 rounded-xl text-[10px] font-bold uppercase">Cerrar</button>
-                    <button onclick="window.guardarCita()" class="flex-1 py-4 btn-primary rounded-xl text-[10px] font-bold uppercase">Guardar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
-    <script type="importmap"> { "imports": { "firebase/app": "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js", "firebase/auth": "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js", "firebase/firestore": "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js" } } </script>
+    <script type="importmap">
+        { "imports": {
+            "firebase/app": "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js",
+            "firebase/auth": "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js",
+            "firebase/firestore": "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"
+        }}
+    </script>
 
     <script type="module">
-        import { initializeApp } from "firebase/app";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, doc, updateDoc, deleteDoc } from "firebase/firestore";
+        import { initializeApp } from 'firebase/app';
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from 'firebase/auth';
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
 
-        const config = JSON.parse(__firebase_config);
-        const app = initializeApp(config);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'eiden-tattoo-v3';
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'eiden-tattoo-vfinal-real';
 
-        const LEGAL_TEXT = `
-            <p class="font-bold text-red-500 mb-2 underline uppercase">1. CONSENTIMIENTO INFORMADO (SANIDAD ESPAÑA)</p>
-            <p>Yo, el cliente, autorizo libremente a <strong>Aída Gómez (eidentattoo)</strong> a realizar el procedimiento de tatuaje. Entiendo que se trata de una técnica irreversible mediante la introducción de pigmentos en la dermis.</p>
-            <p class="font-bold text-white mt-4 mb-2 uppercase tracking-widest">2. RIESGOS Y COMPLICACIONES</p>
-            <p>He sido informado de los riesgos: infecciones locales, reacciones alérgicas a pigmentos, queloides o cicatrización defectuosa. El estudio garantiza material estéril de un solo uso homologado por las autoridades sanitarias españolas.</p>
-            <p class="font-bold text-red-500 mt-4 mb-2 underline uppercase italic">3. DECLARACIÓN JURADA DE SALUD</p>
-            <p><strong>CONFIRMO BAJO MI RESPONSABILIDAD NO PADECER:</strong> VIH, Hepatitis B o C, sífilis, diabetes no controlada, epilepsia, cardiopatías graves, enfermedades de la piel en la zona a tatuar (psoriasis, eccemas) o alergias graves a metales o pigmentos. Declaro no estar bajo la influencia de alcohol o drogas.</p>
-            <p class="font-bold text-white mt-4 mb-2 uppercase tracking-widest">4. PROTECCIÓN DE DATOS (RGPD)</p>
-            <p>Sus datos personales y sanitarios serán tratados por Aída Gómez únicamente para la gestión del historial sanitario. Según el RGPD, puede ejercer sus derechos de acceso y rectificación. No se cederán datos a terceros salvo obligación legal.</p>
-            <p class="font-bold text-white mt-4 mb-2 uppercase tracking-widest">5. PRECIO</p>
-            <p>Acepto que el <strong>mínimo de sesión es de 40€</strong>.</p>
-        `;
+        let currentUser = null;
+        let activeStyles = new Set([1.0]);
+        let isClient = new URLSearchParams(window.location.search).get('mode') === 'client';
 
-        let selMulti = [];
-        let curComp = 0;
+        window.onload = async () => {
+            if (isClient) setupClientMode();
+            
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
 
-        // ASIGNACIÓN GLOBAL DEFINITIVA
-        window.irA = (v) => {
-            if(document.body.classList.contains('client-mode')) return;
-            document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
-            document.getElementById(`view-${v}`).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.dataset.view === v));
-            if(v === 'dashboard') window.initQR();
+            onAuthStateChanged(auth, (u) => {
+                currentUser = u;
+                if (u) initApp();
+            });
+
+            setupCanvas();
+            setupCalc();
         };
 
-        window.toggleStyle = (btn, multi) => {
-            btn.classList.toggle('selected');
-            const idx = selMulti.indexOf(multi);
-            if(idx > -1) selMulti.splice(idx, 1); else selMulti.push(multi);
-            window.recalc();
+        function setupClientMode() {
+            document.getElementById('main-nav').style.display = 'none';
+            document.getElementById('status-tag').innerText = 'Firma Digital';
+            document.getElementById('status-tag').classList.add('bg-accent');
+            window.irA('signature');
+        }
+
+        window.irA = (id) => {
+            if (isClient && id !== 'signature') return;
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo(0, 0);
         };
 
-        window.setComp = (btn, val) => {
-            document.querySelectorAll('.comp-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            curComp = val / 100;
-            window.recalc();
+        function initApp() {
+            const currentUrl = window.location.href.split('?')[0] + "?mode=client";
+            new QRCode(document.getElementById("qrcode"), { text: currentUrl, width: 180, height: 180 });
+
+            // Listeners
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'agenda'), snap => {
+                const list = document.getElementById('lista-citas');
+                list.innerHTML = "";
+                document.getElementById('stats-citas').innerText = snap.size;
+                snap.forEach(d => renderCita(d.id, d.data(), list));
+            });
+
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'stock'), snap => {
+                const list = document.getElementById('lista-stock');
+                let critical = 0;
+                list.innerHTML = "";
+                snap.forEach(d => {
+                    const data = d.data();
+                    const isExp = data.caducidad && new Date(data.caducidad) < new Date();
+                    if (isExp || data.cantidad < 3) critical++;
+                    renderStock(d.id, data, list, isExp);
+                });
+                document.getElementById('stats-stock').innerText = critical;
+            });
+        }
+
+        // AGENDA
+        function renderCita(id, data, container) {
+            const div = document.createElement('div');
+            div.className = "bg-card p-5 rounded-xl border border-white/5 flex justify-between items-center";
+            div.innerHTML = `
+                <div>
+                    <h4 class="font-bold">${data.nombre}</h4>
+                    <p class="text-[10px] text-gray-500 uppercase">${data.fecha} • ${data.hora}</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="window.sendRemind('${data.nombre}', '${data.fecha}', '${data.hora}', '${data.telefono}')" class="p-3 bg-green-500/10 text-green-500 rounded-lg" title="Recordatorio">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    </button>
+                    <button onclick="window.del('agenda', '${id}')" class="p-3 bg-red-500/10 text-red-500 rounded-lg">×</button>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        window.sendRemind = (nom, fecha, hora, tel) => {
+            const msg = `¡Hola ${nom}! Soy Aída de eidentattoo. Te recuerdo nuestra cita el día ${fecha} a las ${hora}. Recomendaciones: Ven descansado/a, habiendo comido y sin consumir alcohol 24h antes. ¡Nos vemos en el estudio!`;
+            window.open(`https://wa.me/${tel.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
-        window.recalc = () => {
-            const cm = parseFloat(document.getElementById('calc-cm').value) || 0;
-            if(selMulti.length === 0) { document.getElementById('calc-res').innerText = "40€"; return; }
-            const maxM = Math.max(...selMulti);
-            const rate = maxM === 1.0 ? 3.0 : 4.5;
-            const mixBonus = (selMulti.length - 1) * 0.15;
-            let total = (40 + (cm * rate)) * maxM * (1 + mixBonus) * (1 + curComp);
-            document.getElementById('calc-res').innerText = Math.max(40, Math.round(total)) + '€';
-        };
-
-        window.initQR = () => {
-            const url = window.location.origin + window.location.pathname + '?mode=client';
-            const qr = qrcode(0, 'H'); qr.addData(url); qr.make();
-            document.getElementById('qrcode').innerHTML = `<img src="${qr.createDataURL(10, 0)}" alt="QR">`;
-        };
-
-        window.initCanvas = () => {
-            const canvas = document.getElementById('sig-canvas');
-            if(!canvas) return;
-            const ctx = canvas.getContext('2d');
-            canvas.width = canvas.offsetWidth;
-            canvas.height = 260;
-            ctx.lineWidth = 3; ctx.strokeStyle = "#000"; ctx.lineCap = "round";
-            let drawing = false;
-            const getP = (e) => {
-                const r = canvas.getBoundingClientRect();
-                const t = e.touches ? e.touches[0] : e;
-                return { x: t.clientX - r.left, y: t.clientY - r.top };
+        document.getElementById('form-cita').addEventListener('submit', async e => {
+            e.preventDefault();
+            const cita = {
+                nombre: document.getElementById('cita-nombre').value,
+                telefono: document.getElementById('cita-tel').value,
+                fecha: document.getElementById('cita-fecha').value,
+                hora: document.getElementById('cita-hora').value,
+                ts: Date.now()
             };
-            canvas.onmousedown = (e) => { drawing = true; ctx.beginPath(); const p = getP(e); ctx.moveTo(p.x, p.y); };
-            canvas.onmousemove = (e) => { if(drawing) { const p = getP(e); ctx.lineTo(p.x, p.y); ctx.stroke(); } };
-            window.onmouseup = () => drawing = false;
-            canvas.ontouchstart = (e) => { drawing = true; ctx.beginPath(); const p = getP(e); ctx.moveTo(p.x, p.y); };
-            canvas.ontouchmove = (e) => { if(drawing) { e.preventDefault(); const p = getP(e); ctx.lineTo(p.x, p.y); ctx.stroke(); } };
-            canvas.ontouchend = () => drawing = false;
-            window.limpiarFirma = () => ctx.clearRect(0,0,canvas.width,canvas.height);
-        };
-
-        window.saveSig = async () => {
-            const n = document.getElementById('c-name').value;
-            const d = document.getElementById('c-dni').value;
-            if(!n || !d) return alert("Completa los campos.");
-            const canvas = document.getElementById('sig-canvas');
-            try {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'consentimientos'), {
-                    cliente: n, dni: d, firma: canvas.toDataURL(), timestamp: serverTimestamp()
-                });
-                document.getElementById('view-consent').innerHTML = `<div class="p-12 text-center"><div class="text-7xl mb-6">✅</div><h2 class="text-2xl font-black text-red-500 uppercase tracking-tighter">Documento Firmado</h2><p class="text-sm text-gray-500 mt-4">Proceso legal finalizado. Devuelve el dispositivo a Aída.</p></div>`;
-            } catch(e) { alert("Error"); }
-        };
-
-        window.compartirURL = () => {
-            const url = window.location.origin + window.location.pathname + '?mode=client';
-            navigator.clipboard.writeText(url); alert("Copiado");
-        };
-
-        window.abrirCita = () => document.getElementById('modal-cita').classList.toggle('hidden');
-        window.verModeloLegal = () => document.getElementById('modal-legal').classList.toggle('hidden');
-
-        window.guardarCita = async () => {
-            const n = document.getElementById('n-client').value;
-            const t = document.getElementById('n-tel').value;
-            const d = document.getElementById('n-date').value;
-            const h = document.getElementById('n-time').value;
-            if(!n || !t || !d) return alert("Faltan datos.");
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'agenda'), { nombre: n, tel: t, fecha: d, hora: h });
-            window.abrirCita();
-        };
-
-        window.borrarCita = async (id) => { if(confirm("¿Eliminar?")) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agenda', id)); };
-        window.upSt = async (id, v) => await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', id), { cantidad: v });
-
-        async function startSync() {
-            document.getElementById('legal-text-main').innerHTML = LEGAL_TEXT;
-            document.getElementById('legal-text-modal').innerHTML = LEGAL_TEXT;
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'agenda'), (snap) => {
-                const list = document.getElementById('agenda-list'); list.innerHTML = '';
-                snap.forEach(d => {
-                    const c = d.data();
-                    const wa = `https://wa.me/${c.tel.replace(/\s/g, '')}?text=${encodeURIComponent("Hola "+c.nombre+", soy Aída de eidentattoo. Confirmo nuestra cita el día "+c.fecha+" a las "+c.hora+". ¿Confirmas asistencia?")}`;
-                    list.innerHTML += `<div class="luxury-card p-5 flex justify-between items-center border-l-4 border-red-500"><div><h4 class="font-bold text-sm uppercase italic tracking-tight">${c.nombre}</h4><p class="text-[9px] text-gray-500">${c.fecha} • ${c.hora}</p></div><div class="flex gap-2"><a href="${wa}" target="_blank" class="w-10 h-10 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.93.55 3.72 1.5 5.25L2 22l4.75-1.5c1.53.95 3.32 1.5 5.25 1.5 5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg></a><button onclick="window.borrarCita('${d.id}')" class="w-10 h-10 bg-white/5 text-gray-500 rounded-full flex items-center justify-center"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></div></div>`;
-                });
-                document.getElementById('stat-citas').innerText = snap.size;
-            });
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'stock'), (snap) => {
-                const list = document.getElementById('stock-list'); list.innerHTML = '';
-                snap.forEach(d => {
-                    const s = d.data();
-                    list.innerHTML += `<tr class="border-t border-white/5"><td class="p-5 font-bold text-gray-400 text-[9px] uppercase tracking-widest">${s.nombre}</td><td class="p-5 text-center font-black ${s.cantidad < 5 ? 'text-red-500' : 'text-white'} text-base">${s.cantidad}</td><td class="p-5 text-right"><button onclick="window.upSt('${d.id}', ${s.cantidad+1})" class="px-5 py-2 bg-red-500/10 rounded-full border border-red-500/20 text-red-500 font-black active:scale-90">+</button></td></tr>`;
-                });
-            });
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'consentimientos'), (snap) => {
-                document.getElementById('stat-firmas').innerText = snap.size;
-                const list = document.getElementById('firmas-list'); list.innerHTML = '';
-                snap.forEach(d => {
-                    const f = d.data();
-                    list.innerHTML += `<div class="luxury-card p-5"><div class="flex justify-between items-start mb-3"><div><p class="font-bold text-xs uppercase italic">${f.cliente}</p><p class="text-[8px] text-gray-500 font-black">DNI: ${f.dni}</p></div></div><img src="${f.firma}" class="w-full bg-white rounded-lg h-28 object-contain invert border border-white/5"></div>`;
-                });
-            });
-        }
-
-        const isCl = new URLSearchParams(window.location.search).get('mode') === 'client';
-        if(isCl) { 
-            document.body.classList.add('client-mode'); 
-            setTimeout(window.initCanvas, 500); 
-        }
-
-        signInAnonymously(auth).then(() => {
-            onAuthStateChanged(auth, (u) => { if(u) { startSync(); if(!isCl) window.initQR(); } });
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'agenda'), cita);
+            e.target.reset();
+            toast("Cita agendada");
         });
 
-        document.getElementById('calc-cm').addEventListener('input', window.recalc);
+        // STOCK
+        function renderStock(id, data, container, expired) {
+            const div = document.createElement('div');
+            div.className = `bg-card p-4 rounded-xl border ${expired ? 'border-red-500/50' : 'border-white/5'} flex justify-between items-center`;
+            div.innerHTML = `
+                <div class="flex-1">
+                    <h4 class="text-sm font-bold ${expired ? 'text-red-500' : ''}">${data.nombre} ${expired ? '(CADUCADO)' : ''}</h4>
+                    <p class="text-[10px] text-gray-500 uppercase">Stock: ${data.cantidad} | Cad: ${data.caducidad || 'N/A'}</p>
+                </div>
+                <div class="flex gap-2 items-center">
+                    <button onclick="window.updStock('${id}', ${data.cantidad + 1})" class="w-8 h-8 glass rounded-lg">+</button>
+                    <button onclick="window.updStock('${id}', ${data.cantidad - 1})" class="w-8 h-8 glass rounded-lg">-</button>
+                    <button onclick="window.del('stock', '${id}')" class="ml-2 text-gray-600">×</button>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        window.addStock = async () => {
+            const n = document.getElementById('stock-nombre').value;
+            const c = parseInt(document.getElementById('stock-cant').value);
+            const d_cad = document.getElementById('stock-cad').value;
+            if(!n || isNaN(c)) return;
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'stock'), { nombre: n, cantidad: c, caducidad: d_cad });
+            document.getElementById('stock-nombre').value = "";
+            document.getElementById('stock-cant').value = "";
+            document.getElementById('stock-cad').value = "";
+            toast("Material añadido");
+        };
+
+        window.updStock = async (id, v) => {
+            if (v < 0) return;
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stock', id), { cantidad: v });
+        };
+
+        window.del = async (c, id) => {
+            if(confirm("¿Eliminar registro?")) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', c, id));
+        };
+
+        // CALC
+        function setupCalc() {
+            const upd = () => {
+                const cm = parseFloat(document.getElementById('calc-cm').value) || 0;
+                const comp = parseFloat(document.getElementById('calc-range').value) || 0;
+                document.getElementById('comp-label').innerText = comp + "%";
+                
+                let maxM = Math.max(...Array.from(activeStyles));
+                let extraStyles = (activeStyles.size - 1) * 0.15;
+                let costCm = activeStyles.has(1.0) ? (cm * 3) : 0;
+                
+                let total = (40 + costCm) * (maxM + extraStyles) * (1 + (comp/100));
+                document.getElementById('total-price').innerText = Math.ceil(total) + "€";
+            };
+            document.getElementById('calc-cm').oninput = upd;
+            document.getElementById('calc-range').oninput = upd;
+            window.selStyle = (btn, m) => {
+                if(activeStyles.has(m) && activeStyles.size > 1) {
+                    activeStyles.delete(m); btn.classList.remove('bg-accent');
+                } else {
+                    activeStyles.add(m); btn.classList.add('bg-accent');
+                }
+                upd();
+            };
+        }
+
+        // LEGAL & CANVAS
+        let canvas, ctx, drawing = false;
+        function setupCanvas() {
+            canvas = document.getElementById('sig-canvas');
+            ctx = canvas.getContext('2d');
+            const fit = () => {
+                const r = window.devicePixelRatio || 1;
+                canvas.width = canvas.offsetWidth * r;
+                canvas.height = canvas.offsetHeight * r;
+                ctx.scale(r, r);
+                ctx.strokeStyle = "#000"; ctx.lineWidth = 2.5; ctx.lineCap = "round";
+            };
+            fit(); window.onresize = fit;
+
+            const getP = e => {
+                const r = canvas.getBoundingClientRect();
+                const x = e.touches ? e.touches[0].clientX : e.clientX;
+                const y = e.touches ? e.touches[0].clientY : e.clientY;
+                return { x: x - r.left, y: y - r.top };
+            };
+            const start = e => { drawing = true; const p = getP(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); };
+            const move = e => { if(!drawing) return; const p = getP(e); ctx.lineTo(p.x, p.y); ctx.stroke(); e.preventDefault(); };
+            canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move);
+            window.addEventListener('mouseup', () => drawing = false);
+            canvas.addEventListener('touchstart', start); canvas.addEventListener('touchmove', move);
+            window.addEventListener('touchend', () => drawing = false);
+        }
+
+        window.clearSig = () => ctx.clearRect(0,0,canvas.width,canvas.height);
+
+        document.getElementById('form-legal').onsubmit = async e => {
+            e.preventDefault();
+            const qs = Array.from(document.querySelectorAll('.health-q:checked')).map(q => q.value);
+            const data = {
+                nombre: document.getElementById('legal-nombre').value,
+                dni: document.getElementById('legal-dni').value,
+                salud: qs,
+                firma: canvas.toDataURL(),
+                fecha: new Date().toISOString()
+            };
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'firmas'), data);
+            toast("CONSENTIMIENTO GUARDADO");
+            if(isClient) setTimeout(() => location.reload(), 2000);
+            else { e.target.reset(); window.clearSig(); }
+        };
+
+        // HELPERS
+        window.copyLink = () => {
+            const url = window.location.href.split('?')[0] + "?mode=client";
+            const i = document.createElement('input'); i.value = url; document.body.appendChild(i);
+            i.select(); document.execCommand('copy'); document.body.removeChild(i);
+            toast("Link Copiado");
+        };
+
+        function toast(m) {
+            const t = document.getElementById('toast');
+            t.innerText = m; t.classList.remove('hidden');
+            setTimeout(() => t.classList.add('hidden'), 3000);
+        }
+
     </script>
 </body>
 </html>
